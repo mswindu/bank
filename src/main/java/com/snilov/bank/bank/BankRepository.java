@@ -1,4 +1,6 @@
 package com.snilov.bank.bank;
 
-public class BankRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface BankRepository extends CrudRepository<Bank, Long> {
 }

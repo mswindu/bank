@@ -1,10 +1,7 @@
 package com.snilov.bank.bank;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.rest.webmvc.RepositoryRestController;
 
-@RestController
-@RequestMapping("banks")
+@RepositoryRestController
 public class BankController {
-
 }
