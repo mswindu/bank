@@ -1,11 +1,8 @@
 package com.snilov.bank.card;
 
 import com.snilov.bank.account.Account;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.UUID;
 
 @Entity
