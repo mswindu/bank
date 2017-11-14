@@ -3,16 +3,16 @@ package com.snilov.bank.card;
 import com.snilov.bank.account.Account;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.io.Serializable;
 
 @Entity
-public class Card {
+public class Card implements Serializable {
 
     public enum TypeCard {DEBIT, CREDIT}
 
     @Id
-    @Column(length = 36)
-    private String uuid = UUID.randomUUID().toString();
+    @GeneratedValue
+    private Long id;
 
     @Column(length = 16)
     private String number;
@@ -27,17 +27,15 @@ public class Card {
     @Column(nullable = false)
     private Boolean blocked;
 
-    // Так сделал, чтобы при создании новой карты, создавался новый счет.
     public Card() {
-        this.account = new Account(Account.Currency.RUR, 0, Account.AccountType.DEBIT);
     }
 
-    public String getUuid() {
-        return uuid;
+    public Long getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNumber() {
@@ -75,7 +73,7 @@ public class Card {
     @Override
     public String toString() {
         return "Card{" +
-                "uuid='" + uuid + '\'' +
+                "id='" + id + '\'' +
                 ", number='" + number + '\'' +
                 ", type=" + type +
                 ", account=" + account +

@@ -1,7 +1,6 @@
 package com.snilov.bank.account;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 public class Account {
@@ -10,8 +9,8 @@ public class Account {
     public enum Currency {RUR, EUR, USD}
 
     @Id
-    @Column(length = 36)
-    private String uuid = UUID.randomUUID().toString();
+    @GeneratedValue
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -24,18 +23,18 @@ public class Account {
 
     public Account() {}
 
-    public Account(Currency currency, Integer balance, AccountType type) {
+    public Account(Currency currency, Integer balance, AccountType type) {;
         this.currency = currency;
         this.balance = balance;
         this.type = type;
     }
 
-    public String getUuid() {
-        return uuid;
+    public Long getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Currency getCurrency() {
@@ -65,7 +64,7 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "uuid='" + uuid + '\'' +
+                "id='" + id + '\'' +
                 ", currency=" + currency +
                 ", balance=" + balance +
                 ", type=" + type +
