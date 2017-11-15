@@ -14,6 +14,7 @@ public class Card implements Serializable {
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid2")
+    @Column(length = 36)
     private String uuid;
 
     @Column(length = 16)
