@@ -1,5 +1,7 @@
 package com.snilov.bank.account;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,8 +11,9 @@ public class Account {
     public enum Currency {RUR, EUR, USD}
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid2")
+    private String uuid;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -29,12 +32,12 @@ public class Account {
         this.type = type;
     }
 
-    public Long getId() {
-        return id;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public Currency getCurrency() {
@@ -64,7 +67,7 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "id='" + id + '\'' +
+                "uuid='" + uuid + '\'' +
                 ", currency=" + currency +
                 ", balance=" + balance +
                 ", type=" + type +

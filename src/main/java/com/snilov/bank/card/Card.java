@@ -1,6 +1,7 @@
 package com.snilov.bank.card;
 
 import com.snilov.bank.account.Account;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,8 +12,9 @@ public class Card implements Serializable {
     public enum TypeCard {DEBIT, CREDIT}
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid2")
+    private String uuid;
 
     @Column(length = 16)
     private String number;
@@ -30,12 +32,12 @@ public class Card implements Serializable {
     public Card() {
     }
 
-    public Long getId() {
-        return id;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getNumber() {
@@ -73,7 +75,7 @@ public class Card implements Serializable {
     @Override
     public String toString() {
         return "Card{" +
-                "id='" + id + '\'' +
+                "uuid='" + uuid + '\'' +
                 ", number='" + number + '\'' +
                 ", type=" + type +
                 ", account=" + account +

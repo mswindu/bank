@@ -2,5 +2,5 @@ package com.snilov.bank.card;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface CardRepository extends CrudRepository<Card, Long> {
+public interface CardRepository extends CrudRepository<Card, String> {
 }

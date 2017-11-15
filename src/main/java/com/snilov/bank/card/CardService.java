@@ -28,11 +28,11 @@ public class CardService {
     }
 
     public Card createNewCard(Card card) {
-        System.out.println(card.toString());
-        Account account;
-        Long id = card.getAccount().getId();
-        if(id != null){
-            Optional<Account> foundAccount = accountRepository.findById(id);
+        Account account = card.getAccount();
+
+        if(account != null){
+            String uuid = account.getUuid();
+            Optional<Account> foundAccount = accountRepository.findById(uuid);
             if (foundAccount.isPresent())
                 account = foundAccount.get();
             else
