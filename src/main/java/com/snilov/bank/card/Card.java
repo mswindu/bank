@@ -14,13 +14,14 @@ public class Card implements Serializable {
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid2")
-    @Column(length = 36)
+    @Column(length = 36, nullable = false)
     private String uuid;
 
-    @Column(length = 16)
+    @Column(length = 16, nullable = false)
     private String number;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TypeCard type;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)

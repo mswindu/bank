@@ -13,16 +13,18 @@ public class Account {
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid2")
-    @Column(length = 36)
+    @Column(length = 36, nullable = false)
     private String uuid;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Currency currency;
 
     @Column(nullable = false)
     private Integer balance;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AccountType type;
 
     public Account() {}

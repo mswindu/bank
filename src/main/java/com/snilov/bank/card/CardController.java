@@ -6,9 +6,11 @@ import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @RepositoryRestController
+@RequestMapping(value = "/cards")
 public class CardController {
 
     private final CardService cardService;
@@ -18,7 +20,7 @@ public class CardController {
         this.cardService = cardService;
     }
 
-    @PostMapping(value = "/cards")
+    @PostMapping(value = "")
     @ResponseBody
     public PersistentEntityResource createNewCard(@RequestBody Card card, PersistentEntityResourceAssembler asm) {
         return asm.toFullResource(cardService.createNewCard(card));
