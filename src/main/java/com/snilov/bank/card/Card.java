@@ -34,6 +34,12 @@ public class Card implements Serializable {
     public Card() {
     }
 
+    public Card(String number, TypeCard type, Boolean blocked) {
+        this.number = number;
+        this.type = type;
+        this.blocked = blocked;
+    }
+
     public String getUuid() {
         return uuid;
     }

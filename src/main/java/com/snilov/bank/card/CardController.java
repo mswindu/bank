@@ -21,7 +21,8 @@ public class CardController {
     @PostMapping(value = "")
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    public PersistentEntityResource createNewCard(@RequestBody Card card, PersistentEntityResourceAssembler asm) {
-        return asm.toFullResource(cardService.createNewCard(card));
+    public PersistentEntityResource createNewCard(@RequestBody CreateCardRequestBody createCardRequestBody, PersistentEntityResourceAssembler asm) {
+        System.out.println(createCardRequestBody.toString());
+        return asm.toFullResource(cardService.createNewCard(createCardRequestBody));
     }
 }

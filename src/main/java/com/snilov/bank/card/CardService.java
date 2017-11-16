@@ -27,11 +27,12 @@ public class CardService {
         this.accountRepository = accountRepository;
     }
 
-    public Card createNewCard(Card card) {
-        Account account = card.getAccount();
+    public Card createNewCard(CreateCardRequestBody createCardRequestBody) {
+        Account account;
+        Card card = new Card(createCardRequestBody.getNumber(), createCardRequestBody.getType(), createCardRequestBody.getBlocked());
+        String uuid = createCardRequestBody.getAccountUuid();
 
-        if(account != null){
-            String uuid = account.getUuid();
+        if(uuid != null){
             Optional<Account> foundAccount = accountRepository.findById(uuid);
             if (foundAccount.isPresent())
                 account = foundAccount.get();
