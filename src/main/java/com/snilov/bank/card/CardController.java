@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RepositoryRestController
 @RequestMapping(value = "/cards")
@@ -22,6 +20,7 @@ public class CardController {
 
     @PostMapping(value = "")
     @ResponseBody
+    @ResponseStatus(value = HttpStatus.CREATED)
     public PersistentEntityResource createNewCard(@RequestBody Card card, PersistentEntityResourceAssembler asm) {
         return asm.toFullResource(cardService.createNewCard(card));
     }

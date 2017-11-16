@@ -49,7 +49,7 @@ public class BankApplicationTests {
 						.content(createCardsJson("false",
 								"1", "DEBIT"));
 
-		this.mockMvc.perform(builder).andExpect(status().isOk());
+		this.mockMvc.perform(builder).andExpect(status().isCreated());
 	}
 
 	private static String createAccountJson(String currency, String balance, String type) {
