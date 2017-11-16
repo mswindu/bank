@@ -1,6 +1,6 @@
 package com.snilov.bank.transaction;
 
-import com.snilov.bank.account.ThereIsNoSuchAccountException;
+import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.card.Card;
 import com.snilov.bank.card.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;

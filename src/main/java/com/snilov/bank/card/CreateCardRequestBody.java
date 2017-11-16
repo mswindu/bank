@@ -1,9 +1,17 @@
 package com.snilov.bank.card;
 
+import javax.validation.constraints.NotNull;
+
 public class CreateCardRequestBody {
+    @NotNull
     private String number;
+
+    @NotNull
     private Card.TypeCard type;
+
+    @NotNull
     private Boolean blocked;
+
     private String accountUuid;
 
     CreateCardRequestBody() {}

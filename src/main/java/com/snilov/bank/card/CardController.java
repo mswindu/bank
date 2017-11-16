@@ -7,6 +7,8 @@ import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RepositoryRestController
 @RequestMapping(value = "/cards")
 public class CardController {
@@ -21,7 +23,7 @@ public class CardController {
     @PostMapping(value = "")
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    public PersistentEntityResource createNewCard(@RequestBody CreateCardRequestBody createCardRequestBody, PersistentEntityResourceAssembler asm) {
+    public PersistentEntityResource createNewCard(@Valid @RequestBody CreateCardRequestBody createCardRequestBody, PersistentEntityResourceAssembler asm) {
         System.out.println(createCardRequestBody.toString());
         return asm.toFullResource(cardService.createNewCard(createCardRequestBody));
     }

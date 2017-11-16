@@ -1,3 +1,3 @@
-package com.snilov.bank.account;
+package com.snilov.bank.exception;
 
 public class ThereIsNoSuchAccountException extends RuntimeException {}

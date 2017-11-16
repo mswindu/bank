@@ -4,7 +4,7 @@ package com.snilov.bank.card;
 import com.snilov.bank.account.Account;
 import com.snilov.bank.account.Account.Currency;
 import com.snilov.bank.account.AccountRepository;
-import com.snilov.bank.account.ThereIsNoSuchAccountException;
+import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
