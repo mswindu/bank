@@ -1,9 +1,16 @@
 package com.snilov.bank.account;
 
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @Entity
 public class Account {
 
@@ -27,53 +34,9 @@ public class Account {
     @Column(nullable = false)
     private AccountType type;
 
-    public Account() {}
-
     public Account(Currency currency, Integer balance, AccountType type) {
         this.currency = currency;
         this.balance = balance;
         this.type = type;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
-
-    public Integer getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Integer balance) {
-        this.balance = balance;
-    }
-
-    public AccountType getType() {
-        return type;
-    }
-
-    public void setType(AccountType type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "uuid='" + uuid + '\'' +
-                ", currency=" + currency +
-                ", balance=" + balance +
-                ", type=" + type +
-                '}';
     }
 }

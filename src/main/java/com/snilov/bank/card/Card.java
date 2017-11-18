@@ -1,11 +1,18 @@
 package com.snilov.bank.card;
 
 import com.snilov.bank.account.Account;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @Entity
 public class Card implements Serializable {
 
@@ -31,63 +38,9 @@ public class Card implements Serializable {
     @Column(nullable = false)
     private Boolean blocked;
 
-    public Card() {
-    }
-
     public Card(String number, TypeCard type, Boolean blocked) {
         this.number = number;
         this.type = type;
         this.blocked = blocked;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public TypeCard getType() {
-        return type;
-    }
-
-    public void setType(TypeCard type) {
-        this.type = type;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
-
-    @Override
-    public String toString() {
-        return "Card{" +
-                "uuid='" + uuid + '\'' +
-                ", number='" + number + '\'' +
-                ", type=" + type +
-                ", account=" + account +
-                ", blocked=" + blocked +
-                '}';
     }
 }

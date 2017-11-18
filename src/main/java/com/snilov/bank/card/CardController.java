@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RepositoryRestController
-@RequestMapping(value = "/cards")
 public class CardController {
 
     private final CardService cardService;
@@ -20,7 +19,7 @@ public class CardController {
         this.cardService = cardService;
     }
 
-    @PostMapping(value = "/")
+    @PostMapping(value = "/cards")
     @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
     public PersistentEntityResource createNewCard(@Valid @RequestBody CreateCardRequestBody createCardRequestBody, PersistentEntityResourceAssembler asm) {
