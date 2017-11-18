@@ -2,11 +2,18 @@ package com.snilov.bank.transaction;
 
 import com.snilov.bank.account.Account;
 import com.snilov.bank.card.Card;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @Entity
 public class Transaction {
 
@@ -34,8 +41,6 @@ public class Transaction {
     @Column(nullable = false)
     private Integer amountAfter;
 
-    public Transaction() {}
-
     public Transaction(Account account, Card card, Integer transactionAmount, Date transactionDate, Integer amountBefore, Integer amountAfter) {
         this.account = account;
         this.card = card;
@@ -43,73 +48,5 @@ public class Transaction {
         this.transactionDate = transactionDate;
         this.amountBefore = amountBefore;
         this.amountAfter = amountAfter;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public Card getCard() {
-        return card;
-    }
-
-    public void setCard(Card card) {
-        this.card = card;
-    }
-
-    public Integer getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public void setTransactionAmount(Integer transactionAmount) {
-        this.transactionAmount = transactionAmount;
-    }
-
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public Integer getAmountBefore() {
-        return amountBefore;
-    }
-
-    public void setAmountBefore(Integer amountBefore) {
-        this.amountBefore = amountBefore;
-    }
-
-    public Integer getAmountAfter() {
-        return amountAfter;
-    }
-
-    public void setAmountAfter(Integer amountAfter) {
-        this.amountAfter = amountAfter;
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "uuid='" + uuid + '\'' +
-                ", account=" + account +
-                ", transactionAmount=" + transactionAmount +
-                ", transactionDate=" + transactionDate +
-                ", amountBefore=" + amountBefore +
-                ", amountAfter=" + amountAfter +
-                '}';
     }
 }
