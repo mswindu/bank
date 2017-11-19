@@ -37,7 +37,7 @@ public class CardService {
             if (foundAccount.isPresent())
                 account = foundAccount.get();
             else
-                throw new ThereIsNoSuchAccountException();
+                throw new ThereIsNoSuchAccountException("There is no such account");
         } else {
             account = new Account(Currency.RUR, 0, AccountType.DEBIT);
         }

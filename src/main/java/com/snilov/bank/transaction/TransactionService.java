@@ -30,7 +30,7 @@ public class TransactionService {
         if (foundCard.isPresent())
             card = foundCard.get();
         else
-            throw new ThereIsNoSuchAccountException();
+            throw new ThereIsNoSuchAccountException("There is no such account");
 
         Integer transactionAmount = transactionRequestBody.getTransactionAmount();
         Integer amountBefore = card.getAccount().getBalance();

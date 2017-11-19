@@ -12,30 +12,13 @@ import javax.validation.ValidationException;
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<AwesomeException> invalidInput(ValidationException ex) {
-        String result = ex.getMessage();
-        return new ResponseEntity<AwesomeException>(new AwesomeException(result), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseException> invalidInput(ValidationException ex) {
+        return new ResponseEntity<ResponseException>(new ResponseException(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ThereIsNoSuchAccountException.class)
-    protected ResponseEntity<AwesomeException> handleThereIsNoSuchAccountException() {
-        return new ResponseEntity<>(new AwesomeException("There is no such account"), HttpStatus.NOT_FOUND);
-    }
-
-    private static class AwesomeException {
-        private String message;
-
-        AwesomeException(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
+    protected ResponseEntity<ResponseException> handleThereIsNoSuchAccountException(ThereIsNoSuchAccountException ex) {
+        return new ResponseEntity<>(new ResponseException(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
 }
