@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode
 @Entity
-public class Account {
+public class Account implements Serializable{
 
     public enum AccountType {DEBIT, CREDIT}
     public enum Currency {RUR, EUR, USD}

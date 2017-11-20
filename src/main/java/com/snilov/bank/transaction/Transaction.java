@@ -17,6 +17,8 @@ import java.util.Date;
 @Entity
 public class Transaction {
 
+    public enum TypeTransaction {}
+
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid2")
