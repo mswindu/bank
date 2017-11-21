@@ -123,12 +123,4 @@ public class BankApplicationTests {
 				"\"number\": \"" + number + "\", " +
 				"\"type\": \"" + type + "\"}";
 	}
-
-	private String getResourceIdFromUrl(String locationUrl) {
-		String[] parts = locationUrl.split("/");
-
-		return "123";
-		//return Long.valueOf(parts[parts.length - 1]);
-	}
-
 }
