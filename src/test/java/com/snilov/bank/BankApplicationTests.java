@@ -43,7 +43,7 @@ public class BankApplicationTests {
 	}
 
 	@Test
-	public void testCreateAccount() throws Exception {
+	public void testCreateNewAccount() throws Exception {
 		MvcResult result = this.mockMvc.perform(post("/accounts")
 						.contentType(MediaType.APPLICATION_JSON_UTF8)
 						.content(createAccountJson("RUR","0", "DEBIT")))
@@ -105,10 +105,39 @@ public class BankApplicationTests {
 				.andExpect(jsonPath("$.type").value("DEBIT"));
 	}
 
+	@Test
+	public void testCreateNewCardWithNotExistingAccount() throws Exception {
+		String uuid = "random-string-name";
+
+		this.mockMvc.perform(post("/cards")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createCardsJson("false","1", "DEBIT", uuid)))
+				.andDo(print())
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.message").value("There is no such account"));
+	}
+
+	@Test
+	public void testCreateNewCardWithIncorrectParameters() throws Exception {
+		this.mockMvc.perform(post("/cards")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createCardsWithIncorrectParametersJson("false","1", "DEBIT")))
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message")
+						.value("Invalid parameters specified. Fields: [ number : null ]  [ type : null ]  [ blocked : null ] "));
+	}
+
 	private static String createAccountJson(String currency, String balance, String type) {
 		return "{ \"currency\": \"" + currency + "\", " +
 				"\"balance\": \"" + balance + "\", " +
 				"\"type\": \"" + type + "\"}";
+	}
+
+	private static String createAccountWithIncorrectParametersJson(String currency, String balance, String type) {
+		return "{ \"currency1\": \"" + currency + "\", " +
+				"\"balance1\": \"" + balance + "\", " +
+				"\"type1\": \"" + type + "\"}";
 	}
 
 	private static String createCardsJson(String blocked, String number, String type, String accountUuid) {
@@ -122,5 +151,11 @@ public class BankApplicationTests {
 		return "{ \"blocked\": \"" + blocked + "\", " +
 				"\"number\": \"" + number + "\", " +
 				"\"type\": \"" + type + "\"}";
+	}
+
+	private static String createCardsWithIncorrectParametersJson(String blocked, String number, String type) {
+		return "{ \"blocked1\": \"" + blocked + "\", " +
+				"\"number1\": \"" + number + "\", " +
+				"\"type1\": \"" + type + "\"}";
 	}
 }
