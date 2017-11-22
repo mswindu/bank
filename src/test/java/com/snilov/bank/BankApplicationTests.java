@@ -41,21 +41,29 @@ public class BankApplicationTests {
 
 	@Test
 	public void testCreateNewAccount() throws Exception {
-		MvcResult result = this.mockMvc.perform(post("/accounts")
+		this.mockMvc.perform(post("/accounts")
 						.contentType(MediaType.APPLICATION_JSON_UTF8)
 						.content(createAccountJson("RUR","0", "DEBIT")))
 				.andDo(print())
 				.andExpect(status().isCreated())
-				.andReturn();
-
-		String location = result.getResponse().getHeader("Location");
-
-		this.mockMvc.perform(get(location))
-				.andExpect(status().isOk())
-				.andDo(print())
 				.andExpect(jsonPath("$.currency").value("RUR"))
 				.andExpect(jsonPath("$.balance").value("0"))
 				.andExpect(jsonPath("$.type").value("DEBIT"));
+	}
+
+	@Test
+	public void testCreateNewAccountWithIncorrectParameters() throws Exception {
+		this.mockMvc.perform(post("/accounts")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createAccountWithIncorrectParametersJson("RUR","0", "DEBIT")))
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.*", hasSize(2)))
+				.andExpect(jsonPath("$.message").value("Invalid parameters specified."))
+				.andExpect(jsonPath("$.errors.*", hasSize(3)))
+				.andExpect(jsonPath("$.errors.balance").value("Balance cannot be empty"))
+				.andExpect(jsonPath("$.errors.currency").value("Currency cannot be empty"))
+				.andExpect(jsonPath("$.errors.type").value("Account type cannot be empty"));
 	}
 
 	@Test
@@ -78,13 +86,6 @@ public class BankApplicationTests {
 				.content(createAccountJson("RUR","0", "DEBIT")))
 				.andDo(print())
 				.andExpect(status().isCreated())
-				.andReturn();
-
-		String location = result.getResponse().getHeader("Location");
-
-		result = this.mockMvc.perform(get(location))
-				.andExpect(status().isOk())
-				.andDo(print())
 				.andExpect(jsonPath("$.currency").value("RUR"))
 				.andExpect(jsonPath("$.balance").value("0"))
 				.andExpect(jsonPath("$.type").value("DEBIT"))

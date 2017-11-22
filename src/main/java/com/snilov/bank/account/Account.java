@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @NoArgsConstructor
 @Getter
@@ -26,13 +28,16 @@ public class Account implements Serializable{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull(message = "Currency cannot be empty")
     private Currency currency;
 
     @Column(nullable = false)
+    @NotNull(message = "Balance cannot be empty")
     private Integer balance;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull(message = "Account type cannot be empty")
     private AccountType type;
 
     public Account(Currency currency, Integer balance, AccountType type) {
