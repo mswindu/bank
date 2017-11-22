@@ -11,8 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -20,7 +18,6 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -124,8 +121,12 @@ public class BankApplicationTests {
 				.content(createCardsWithIncorrectParametersJson("false","1", "DEBIT")))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message")
-						.value("Invalid parameters specified. Fields: [ number : null ]  [ type : null ]  [ blocked : null ] "));
+				.andExpect(jsonPath("$.*", hasSize(2)))
+				.andExpect(jsonPath("$.message").value("Invalid parameters specified."))
+				.andExpect(jsonPath("$.errors.*", hasSize(3)))
+				.andExpect(jsonPath("$.errors.number").value("Number card cannot be empty"))
+				.andExpect(jsonPath("$.errors.blocked").value("Blocked status cannot be empty"))
+				.andExpect(jsonPath("$.errors.type").value("Type card cannot be empty"));
 	}
 
 	private static String createAccountJson(String currency, String balance, String type) {
