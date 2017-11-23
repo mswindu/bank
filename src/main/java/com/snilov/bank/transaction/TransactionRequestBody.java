@@ -1,36 +1,21 @@
 package com.snilov.bank.transaction;
 
-import java.util.Date;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
+
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class TransactionRequestBody {
 
+    @NotNull(message = "UUID card cannot be empty")
+    private String uuidCard;
+
+    @NotNull(message = "Transaction amount cannot be empty")
     private Integer transactionAmount;
-
-    private Date transactionDate;
-
-    TransactionRequestBody() {}
-
-    public Integer getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public void setTransactionAmount(Integer transactionAmount) {
-        this.transactionAmount = transactionAmount;
-    }
-
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    @Override
-    public String toString() {
-        return "TransactionRequestBody{" +
-                "transactionAmount=" + transactionAmount +
-                ", transactionDate=" + transactionDate +
-                '}';
-    }
 }

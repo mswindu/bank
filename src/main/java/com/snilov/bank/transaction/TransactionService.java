@@ -1,5 +1,6 @@
 package com.snilov.bank.transaction;
 
+import com.snilov.bank.account.AccountRepository;
 import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.card.Card;
 import com.snilov.bank.card.CardRepository;
@@ -13,28 +14,34 @@ import java.util.Optional;
 @Service
 @Transactional
 public class TransactionService {
+    private final AccountRepository accountRepository;
 
     private final CardRepository cardRepository;
 
     private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionService(CardRepository cardRepository, TransactionRepository transactionRepository) {
+    public TransactionService(CardRepository cardRepository, TransactionRepository transactionRepository, AccountRepository accountRepository) {
         this.cardRepository = cardRepository;
         this.transactionRepository = transactionRepository;
+        this.accountRepository = accountRepository;
     }
 
-    public Transaction createNewTransaction(String cardUuid, TransactionRequestBody transactionRequestBody) {
+    public Transaction createNewTransaction(TransactionRequestBody transactionRequestBody) {
         Card card;
-        Optional<Card> foundCard = cardRepository.findById(cardUuid);
+        Optional<Card> foundCard = cardRepository.findById(transactionRequestBody.getUuidCard());
         if (foundCard.isPresent())
             card = foundCard.get();
         else
-            throw new ThereIsNoSuchAccountException("There is no such account");
+            throw new ThereIsNoSuchAccountException("There is no such card");
 
         Integer transactionAmount = transactionRequestBody.getTransactionAmount();
         Integer amountBefore = card.getAccount().getBalance();
 
-        return transactionRepository.save(new Transaction(card.getAccount(), card, transactionAmount, new Date(), amountBefore, amountBefore + transactionAmount));
+        card.getAccount().setBalance(amountBefore + transactionAmount);
+        accountRepository.save(card.getAccount());
+
+        return transactionRepository.save(new Transaction(card.getAccount(), card, transactionAmount, new Date(),
+                amountBefore, amountBefore + transactionAmount));
     }
 }

@@ -6,8 +6,9 @@ import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RepositoryRestController
-@RequestMapping(value = "/transactions")
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -17,12 +18,12 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @PostMapping(value = "/{cardUuid}")
+    @PostMapping(value = "/transactions")
     @ResponseBody
-    public PersistentEntityResource createNewTransaction(@PathVariable String cardUuid, @RequestBody TransactionRequestBody transactionRequestBody, PersistentEntityResourceAssembler asm) {
-        System.out.println("cardUuid: " + cardUuid);
+    public PersistentEntityResource createNewTransaction(@RequestBody @Valid TransactionRequestBody transactionRequestBody,
+                                                         PersistentEntityResourceAssembler asm) {
         System.out.println(transactionRequestBody);
 
-        return asm.toFullResource(transactionService.createNewTransaction(cardUuid, transactionRequestBody));
+        return asm.toFullResource(transactionService.createNewTransaction(transactionRequestBody));
     }
 }
