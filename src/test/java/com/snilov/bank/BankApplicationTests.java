@@ -74,8 +74,7 @@ public class BankApplicationTests {
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.blocked").value("false"))
 				.andExpect(jsonPath("$.number").value("1"))
-				.andExpect(jsonPath("$.type").value("DEBIT"))
-				.andReturn();
+				.andExpect(jsonPath("$.type").value("DEBIT"));
 	}
 
 	@Test
@@ -90,11 +89,11 @@ public class BankApplicationTests {
 				.andExpect(jsonPath("$.type").value("DEBIT"))
 				.andReturn();
 
-		String uuid = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+		String uuidAccount = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
 
 		this.mockMvc.perform(post("/cards")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
-				.content(createCardsJson("false","1", "DEBIT", uuid)))
+				.content(createCardsJson("false","1", "DEBIT", uuidAccount)))
 				.andDo(print())
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.blocked").value("false"))
@@ -104,11 +103,11 @@ public class BankApplicationTests {
 
 	@Test
 	public void testCreateNewCardWithNotExistingAccount() throws Exception {
-		String uuid = "random-string-name";
+		String uuidAccount = "random-string-name";
 
 		this.mockMvc.perform(post("/cards")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
-				.content(createCardsJson("false","1", "DEBIT", uuid)))
+				.content(createCardsJson("false","1", "DEBIT", uuidAccount)))
 				.andDo(print())
 				.andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.message").value("There is no such account"));
@@ -128,6 +127,55 @@ public class BankApplicationTests {
 				.andExpect(jsonPath("$.errors.blocked").value("Blocked status cannot be empty"))
 				.andExpect(jsonPath("$.errors.type").value("Type card cannot be empty"));
 	}
+
+	@Test
+	public void testCreateNewTransaction() throws Exception {
+		MvcResult result = this.mockMvc.perform(post("/cards")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createCardsJson("false","1", "DEBIT")))
+				.andDo(print())
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.blocked").value("false"))
+				.andExpect(jsonPath("$.number").value("1"))
+				.andExpect(jsonPath("$.type").value("DEBIT"))
+				.andReturn();
+
+		String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+		this.mockMvc.perform(post("/transactions")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createTransactionsJson(uuidCard,"10")))
+				.andDo(print())
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.transactionAmount").value("10"))
+				.andExpect(jsonPath("$.amountBefore").value("0"))
+				.andExpect(jsonPath("$.amountAfter").value("10"));
+	}
+	@Test
+	public void testCreateNewTransactionWithIncorrectParameters() throws Exception {
+		MvcResult result = this.mockMvc.perform(post("/cards")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createCardsJson("false","1", "DEBIT")))
+				.andDo(print())
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.blocked").value("false"))
+				.andExpect(jsonPath("$.number").value("1"))
+				.andExpect(jsonPath("$.type").value("DEBIT"))
+				.andReturn();
+
+		String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+		this.mockMvc.perform(post("/transactions")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createTransactionsWithIncorrectParametersJson(uuidCard,"10")))
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.*", hasSize(2)))
+				.andExpect(jsonPath("$.message").value("Invalid parameters specified."))
+				.andExpect(jsonPath("$.errors.uuidCard").value("UUID card cannot be empty"))
+				.andExpect(jsonPath("$.errors.transactionAmount").value("Transaction amount cannot be empty"));
+	}
+
 
 	private static String createAccountJson(String currency, String balance, String type) {
 		return "{ \"currency\": \"" + currency + "\", " +
@@ -158,5 +206,15 @@ public class BankApplicationTests {
 		return "{ \"blocked1\": \"" + blocked + "\", " +
 				"\"number1\": \"" + number + "\", " +
 				"\"type1\": \"" + type + "\"}";
+	}
+
+	private static String createTransactionsJson(String uuidCard, String transactionAmount) {
+		return "{ \"uuidCard\": \"" + uuidCard + "\", " +
+				"\"transactionAmount\": \"" + transactionAmount + "\"}";
+	}
+
+	private static String createTransactionsWithIncorrectParametersJson(String uuidCard, String transactionAmount) {
+		return "{ \"uuidCard1\": \"" + uuidCard + "\", " +
+				"\"transactionAmount1\": \"" + transactionAmount + "\"}";
 	}
 }
