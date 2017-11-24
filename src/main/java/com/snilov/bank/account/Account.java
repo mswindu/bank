@@ -14,14 +14,15 @@ import javax.validation.constraints.NotNull;
 @ToString
 @EqualsAndHashCode
 @Entity
-public class Account implements Serializable{
+public class Account implements Serializable {
 
     public enum AccountType {DEBIT, CREDIT}
+
     public enum Currency {RUR, EUR, USD}
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid2")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(length = 36, nullable = false)
     private String uuid;
 

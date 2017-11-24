@@ -25,41 +25,41 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 public class AccountControllerTests {
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private WebApplicationContext wac;
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@Before
-	public void setup () {
-		DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
-		this.mockMvc = builder.build();
-	}
+    @Before
+    public void setup() {
+        DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
+        this.mockMvc = builder.build();
+    }
 
-	@Test
-	public void testCreateNewAccount() throws Exception {
-		this.mockMvc.perform(post("/accounts")
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.content(createAccountJson("RUR","0", "DEBIT")))
-				.andDo(print())
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.currency").value("RUR"))
-				.andExpect(jsonPath("$.balance").value("0"))
-				.andExpect(jsonPath("$.type").value("DEBIT"));
-	}
+    @Test
+    public void testCreateNewAccount() throws Exception {
+        this.mockMvc.perform(post("/accounts")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createAccountJson("RUR", "0", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.currency").value("RUR"))
+                .andExpect(jsonPath("$.balance").value("0"))
+                .andExpect(jsonPath("$.type").value("DEBIT"));
+    }
 
-	@Test
-	public void testCreateNewAccountWithIncorrectParameters() throws Exception {
-		this.mockMvc.perform(post("/accounts")
-				.contentType(MediaType.APPLICATION_JSON_UTF8)
-				.content(createAccountWithIncorrectParametersJson("RUR","0", "DEBIT")))
-				.andDo(print())
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.*", hasSize(2)))
-				.andExpect(jsonPath("$.message").value("Invalid parameters specified."))
-				.andExpect(jsonPath("$.errors.*", hasSize(3)))
-				.andExpect(jsonPath("$.errors.balance").value("Balance cannot be empty"))
-				.andExpect(jsonPath("$.errors.currency").value("Currency cannot be empty"))
-				.andExpect(jsonPath("$.errors.type").value("Account type cannot be empty"));
-	}
+    @Test
+    public void testCreateNewAccountWithIncorrectParameters() throws Exception {
+        this.mockMvc.perform(post("/accounts")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createAccountWithIncorrectParametersJson("RUR", "0", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.message").value("Invalid parameters specified."))
+                .andExpect(jsonPath("$.errors.*", hasSize(3)))
+                .andExpect(jsonPath("$.errors.balance").value("Balance cannot be empty"))
+                .andExpect(jsonPath("$.errors.currency").value("Currency cannot be empty"))
+                .andExpect(jsonPath("$.errors.type").value("Account type cannot be empty"));
+    }
 }

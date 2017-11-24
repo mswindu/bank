@@ -18,8 +18,8 @@ public class Card implements Serializable {
     public enum TypeCard {DEBIT, CREDIT}
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid2")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(length = 36, nullable = false)
     private String uuid;
 

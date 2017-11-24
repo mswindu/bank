@@ -33,7 +33,7 @@ public class CardControllerTests {
     private MockMvc mockMvc;
 
     @Before
-    public void setup () {
+    public void setup() {
         DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
         this.mockMvc = builder.build();
     }
@@ -42,7 +42,7 @@ public class CardControllerTests {
     public void testCreateNewCardAndNewAccount() throws Exception {
         this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT")))
+                .content(createCardsJson("false", "1", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -54,7 +54,7 @@ public class CardControllerTests {
     public void testCreateNewCardWithExistingAccount() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/accounts")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createAccountJson("RUR","0", "DEBIT")))
+                .content(createAccountJson("RUR", "0", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.currency").value("RUR"))
@@ -66,7 +66,7 @@ public class CardControllerTests {
 
         this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT", uuidAccount)))
+                .content(createCardsJson("false", "1", "DEBIT", uuidAccount)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -80,7 +80,7 @@ public class CardControllerTests {
 
         this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT", uuidAccount)))
+                .content(createCardsJson("false", "1", "DEBIT", uuidAccount)))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("There is no such account"));
@@ -90,7 +90,7 @@ public class CardControllerTests {
     public void testCreateNewCardWithIncorrectParameters() throws Exception {
         this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsWithIncorrectParametersJson("false","1", "DEBIT")))
+                .content(createCardsWithIncorrectParametersJson("false", "1", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.*", hasSize(2)))

@@ -19,8 +19,8 @@ public class Transaction {
     public enum TypeTransaction {DEPOSIT, WITHDRAW}
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid2")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(length = 36, nullable = false)
     private String uuid;
 

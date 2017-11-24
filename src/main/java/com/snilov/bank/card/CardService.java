@@ -32,7 +32,7 @@ public class CardService {
         Card card = new Card(createCardRequestBody.getNumber(), createCardRequestBody.getType(), createCardRequestBody.getBlocked());
         String uuid = createCardRequestBody.getAccountUuid();
 
-        if(uuid != null && !uuid.isEmpty()){
+        if (uuid != null && !uuid.isEmpty()) {
             Optional<Account> foundAccount = accountRepository.findById(uuid);
             if (foundAccount.isPresent())
                 account = foundAccount.get();

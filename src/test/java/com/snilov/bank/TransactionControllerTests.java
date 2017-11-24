@@ -33,7 +33,7 @@ public class TransactionControllerTests {
     private MockMvc mockMvc;
 
     @Before
-    public void setup () {
+    public void setup() {
         DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
         this.mockMvc = builder.build();
     }
@@ -42,7 +42,7 @@ public class TransactionControllerTests {
     public void testCreateNewDepositTransaction() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT")))
+                .content(createCardsJson("false", "1", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -54,7 +54,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard,"DEPOSIT", "10")))
+                .content(createTransactionsJson(uuidCard, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
@@ -66,7 +66,7 @@ public class TransactionControllerTests {
     public void testCreateNewWithdrawTransaction() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT")))
+                .content(createCardsJson("false", "1", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -78,7 +78,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard,"WITHDRAW", "100")))
+                .content(createTransactionsJson(uuidCard, "WITHDRAW", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
@@ -90,7 +90,7 @@ public class TransactionControllerTests {
     public void testCreateNewTransactionWithIncorrectParameters() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT")))
+                .content(createCardsJson("false", "1", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -102,7 +102,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsWithIncorrectParametersJson(uuidCard,"DEPOSIT", "10")))
+                .content(createTransactionsWithIncorrectParametersJson(uuidCard, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.*", hasSize(2)))
@@ -115,7 +115,7 @@ public class TransactionControllerTests {
     public void testCreateNewTransactionsWithOneAccount() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT")))
+                .content(createCardsJson("false", "1", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -127,7 +127,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard,"DEPOSIT", "10")))
+                .content(createTransactionsJson(uuidCard, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
@@ -136,7 +136,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard,"DEPOSIT", "100")))
+                .content(createTransactionsJson(uuidCard, "DEPOSIT", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
@@ -145,7 +145,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard,"WITHDRAW", "5")))
+                .content(createTransactionsJson(uuidCard, "WITHDRAW", "5")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("5"))
@@ -157,7 +157,7 @@ public class TransactionControllerTests {
     public void testCreateNewTransactionsWithMultipleAccounts() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","1", "DEBIT")))
+                .content(createCardsJson("false", "1", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -169,7 +169,7 @@ public class TransactionControllerTests {
 
         result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false","2", "DEBIT")))
+                .content(createCardsJson("false", "2", "DEBIT")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
@@ -181,7 +181,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard1,"DEPOSIT", "10")))
+                .content(createTransactionsJson(uuidCard1, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
@@ -190,7 +190,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard2,"DEPOSIT", "100")))
+                .content(createTransactionsJson(uuidCard2, "DEPOSIT", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
@@ -199,7 +199,7 @@ public class TransactionControllerTests {
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createTransactionsJson(uuidCard1,"WITHDRAW", "5")))
+                .content(createTransactionsJson(uuidCard1, "WITHDRAW", "5")))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.transactionAmount").value("5"))
