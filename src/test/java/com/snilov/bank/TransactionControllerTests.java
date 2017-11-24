@@ -14,9 +14,7 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.snilov.bank.Utils.createCardsJson;
-import static com.snilov.bank.Utils.createTransactionsJson;
-import static com.snilov.bank.Utils.createTransactionsWithIncorrectParametersJson;
+import static com.snilov.bank.Utils.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -112,7 +110,7 @@ public class TransactionControllerTests {
     }
 
     @Test
-    public void testCreateNewTransactionsWithOneAccount() throws Exception {
+    public void testCreateNewTransactionsWithOneAccountOneCard() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createCardsJson("false", "1", "DEBIT")))
@@ -154,7 +152,82 @@ public class TransactionControllerTests {
     }
 
     @Test
-    public void testCreateNewTransactionsWithMultipleAccounts() throws Exception {
+    public void testCreateNewTransactionsWithOneAccountMultipleCards() throws Exception {
+        MvcResult result = this.mockMvc.perform(post("/accounts")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createAccountJson("RUR", "0", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.currency").value("RUR"))
+                .andExpect(jsonPath("$.balance").value("0"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidAccount = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("false", "1", "DEBIT", uuidAccount)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard1 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("false", "2", "DEBIT", uuidAccount)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("2"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard2 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard1, "DEPOSIT", "10")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("10"))
+                .andExpect(jsonPath("$.amountBefore").value("0"))
+                .andExpect(jsonPath("$.amountAfter").value("10"));
+
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard2, "DEPOSIT", "100")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("100"))
+                .andExpect(jsonPath("$.amountBefore").value("10"))
+                .andExpect(jsonPath("$.amountAfter").value("110"));
+
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard1, "WITHDRAW", "5")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("5"))
+                .andExpect(jsonPath("$.amountBefore").value("110"))
+                .andExpect(jsonPath("$.amountAfter").value("105"));
+
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard2, "WITHDRAW", "50")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("50"))
+                .andExpect(jsonPath("$.amountBefore").value("105"))
+                .andExpect(jsonPath("$.amountAfter").value("55"));
+    }
+
+    @Test
+    public void testCreateNewTransactionsWithMultipleAccountsMultipleCards() throws Exception {
         MvcResult result = this.mockMvc.perform(post("/cards")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createCardsJson("false", "1", "DEBIT")))
