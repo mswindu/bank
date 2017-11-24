@@ -129,7 +129,7 @@ public class BankApplicationTests {
 	}
 
 	@Test
-	public void testCreateNewTransaction() throws Exception {
+	public void testCreateNewDepositTransaction() throws Exception {
 		MvcResult result = this.mockMvc.perform(post("/cards")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
 				.content(createCardsJson("false","1", "DEBIT")))
@@ -144,13 +144,38 @@ public class BankApplicationTests {
 
 		this.mockMvc.perform(post("/transactions")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
-				.content(createTransactionsJson(uuidCard,"10")))
+				.content(createTransactionsJson(uuidCard,"DEPOSIT", "10")))
 				.andDo(print())
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.transactionAmount").value("10"))
 				.andExpect(jsonPath("$.amountBefore").value("0"))
 				.andExpect(jsonPath("$.amountAfter").value("10"));
 	}
+
+	@Test
+	public void testCreateNewWithdrawTransaction() throws Exception {
+		MvcResult result = this.mockMvc.perform(post("/cards")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createCardsJson("false","1", "DEBIT")))
+				.andDo(print())
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.blocked").value("false"))
+				.andExpect(jsonPath("$.number").value("1"))
+				.andExpect(jsonPath("$.type").value("DEBIT"))
+				.andReturn();
+
+		String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+		this.mockMvc.perform(post("/transactions")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(createTransactionsJson(uuidCard,"WITHDRAW", "100")))
+				.andDo(print())
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.transactionAmount").value("100"))
+				.andExpect(jsonPath("$.amountBefore").value("0"))
+				.andExpect(jsonPath("$.amountAfter").value("-100"));
+	}
+
 	@Test
 	public void testCreateNewTransactionWithIncorrectParameters() throws Exception {
 		MvcResult result = this.mockMvc.perform(post("/cards")
@@ -167,7 +192,7 @@ public class BankApplicationTests {
 
 		this.mockMvc.perform(post("/transactions")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)
-				.content(createTransactionsWithIncorrectParametersJson(uuidCard,"10")))
+				.content(createTransactionsWithIncorrectParametersJson(uuidCard,"DEPOSIT", "10")))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.*", hasSize(2)))
@@ -208,13 +233,15 @@ public class BankApplicationTests {
 				"\"type1\": \"" + type + "\"}";
 	}
 
-	private static String createTransactionsJson(String uuidCard, String transactionAmount) {
+	private static String createTransactionsJson(String uuidCard, String typeTransaction, String transactionAmount) {
 		return "{ \"uuidCard\": \"" + uuidCard + "\", " +
+				"\"typeTransaction\": \"" + typeTransaction + "\", " +
 				"\"transactionAmount\": \"" + transactionAmount + "\"}";
 	}
 
-	private static String createTransactionsWithIncorrectParametersJson(String uuidCard, String transactionAmount) {
+	private static String createTransactionsWithIncorrectParametersJson(String uuidCard, String typeTransaction, String transactionAmount) {
 		return "{ \"uuidCard1\": \"" + uuidCard + "\", " +
+				"\"typeTransaction\": \"" + typeTransaction + "\", " +
 				"\"transactionAmount1\": \"" + transactionAmount + "\"}";
 	}
 }

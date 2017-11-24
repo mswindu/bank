@@ -7,7 +7,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Data
 @NoArgsConstructor
 @Getter
 @Setter

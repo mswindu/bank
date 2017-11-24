@@ -8,7 +8,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.Date;
 
-@Data
 @NoArgsConstructor
 @Getter
 @Setter
@@ -17,7 +16,7 @@ import java.util.Date;
 @Entity
 public class Transaction {
 
-    public enum TypeTransaction {}
+    public enum TypeTransaction {DEPOSIT, WITHDRAW}
 
     @Id
     @GeneratedValue(generator="system-uuid")
@@ -31,6 +30,10 @@ public class Transaction {
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     private Card card;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TypeTransaction typeTransaction;
+
     @Column(nullable = false)
     private Integer transactionAmount;
 
@@ -43,9 +46,11 @@ public class Transaction {
     @Column(nullable = false)
     private Integer amountAfter;
 
-    public Transaction(Account account, Card card, Integer transactionAmount, Date transactionDate, Integer amountBefore, Integer amountAfter) {
+    public Transaction(Account account, Card card, TypeTransaction typeTransaction, Integer transactionAmount,
+                       Date transactionDate, Integer amountBefore, Integer amountAfter) {
         this.account = account;
         this.card = card;
+        this.typeTransaction = typeTransaction;
         this.transactionAmount = transactionAmount;
         this.transactionDate = transactionDate;
         this.amountBefore = amountBefore;

@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-@Data
 @NoArgsConstructor
 @Getter
 @Setter

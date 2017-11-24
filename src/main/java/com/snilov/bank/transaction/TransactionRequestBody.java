@@ -16,6 +16,9 @@ public class TransactionRequestBody {
     @NotNull(message = "UUID card cannot be empty")
     private String uuidCard;
 
+    @NotNull(message = "Transaction type cannot by empty")
+    private Transaction.TypeTransaction typeTransaction;
+
     @NotNull(message = "Transaction amount cannot be empty")
     private Integer transactionAmount;
 }

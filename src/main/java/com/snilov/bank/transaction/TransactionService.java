@@ -36,12 +36,19 @@ public class TransactionService {
             throw new ThereIsNoSuchAccountException("There is no such card");
 
         Integer transactionAmount = transactionRequestBody.getTransactionAmount();
+
+        if (transactionRequestBody.getTypeTransaction() == Transaction.TypeTransaction.WITHDRAW)
+            transactionAmount *= -1;
+
         Integer amountBefore = card.getAccount().getBalance();
 
         card.getAccount().setBalance(amountBefore + transactionAmount);
         accountRepository.save(card.getAccount());
 
-        return transactionRepository.save(new Transaction(card.getAccount(), card, transactionAmount, new Date(),
-                amountBefore, amountBefore + transactionAmount));
+        return transactionRepository.save(
+                new Transaction(card.getAccount(), card, transactionRequestBody.getTypeTransaction(),
+                        transactionRequestBody.getTransactionAmount(), new Date(), amountBefore,
+                        amountBefore + transactionAmount
+                ));
     }
 }
