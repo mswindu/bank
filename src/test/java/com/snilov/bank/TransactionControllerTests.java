@@ -14,6 +14,9 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.snilov.bank.Utils.createCardsJson;
+import static com.snilov.bank.Utils.createTransactionsJson;
+import static com.snilov.bank.Utils.createTransactionsWithIncorrectParametersJson;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -202,23 +205,5 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.transactionAmount").value("5"))
                 .andExpect(jsonPath("$.amountBefore").value("10"))
                 .andExpect(jsonPath("$.amountAfter").value("5"));
-    }
-
-    private static String createCardsJson(String blocked, String number, String type) {
-        return "{ \"blocked\": \"" + blocked + "\", " +
-                "\"number\": \"" + number + "\", " +
-                "\"type\": \"" + type + "\"}";
-    }
-
-    private static String createTransactionsJson(String uuidCard, String typeTransaction, String transactionAmount) {
-        return "{ \"uuidCard\": \"" + uuidCard + "\", " +
-                "\"typeTransaction\": \"" + typeTransaction + "\", " +
-                "\"transactionAmount\": \"" + transactionAmount + "\"}";
-    }
-
-    private static String createTransactionsWithIncorrectParametersJson(String uuidCard, String typeTransaction, String transactionAmount) {
-        return "{ \"uuidCard1\": \"" + uuidCard + "\", " +
-                "\"typeTransaction\": \"" + typeTransaction + "\", " +
-                "\"transactionAmount1\": \"" + transactionAmount + "\"}";
     }
 }

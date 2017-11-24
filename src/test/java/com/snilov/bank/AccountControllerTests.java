@@ -1,6 +1,5 @@
 package com.snilov.bank;
 
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,11 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.snilov.bank.Utils.createAccountJson;
+import static com.snilov.bank.Utils.createAccountWithIncorrectParametersJson;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,17 +61,5 @@ public class AccountControllerTests {
 				.andExpect(jsonPath("$.errors.balance").value("Balance cannot be empty"))
 				.andExpect(jsonPath("$.errors.currency").value("Currency cannot be empty"))
 				.andExpect(jsonPath("$.errors.type").value("Account type cannot be empty"));
-	}
-
-	private static String createAccountJson(String currency, String balance, String type) {
-		return "{ \"currency\": \"" + currency + "\", " +
-				"\"balance\": \"" + balance + "\", " +
-				"\"type\": \"" + type + "\"}";
-	}
-
-	private static String createAccountWithIncorrectParametersJson(String currency, String balance, String type) {
-		return "{ \"currency1\": \"" + currency + "\", " +
-				"\"balance1\": \"" + balance + "\", " +
-				"\"type1\": \"" + type + "\"}";
 	}
 }

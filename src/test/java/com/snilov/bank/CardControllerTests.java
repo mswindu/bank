@@ -14,6 +14,9 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.snilov.bank.Utils.createAccountJson;
+import static com.snilov.bank.Utils.createCardsJson;
+import static com.snilov.bank.Utils.createCardsWithIncorrectParametersJson;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -96,30 +99,5 @@ public class CardControllerTests {
                 .andExpect(jsonPath("$.errors.number").value("Number card cannot be empty"))
                 .andExpect(jsonPath("$.errors.blocked").value("Blocked status cannot be empty"))
                 .andExpect(jsonPath("$.errors.type").value("Type card cannot be empty"));
-    }
-
-    private static String createAccountJson(String currency, String balance, String type) {
-        return "{ \"currency\": \"" + currency + "\", " +
-                "\"balance\": \"" + balance + "\", " +
-                "\"type\": \"" + type + "\"}";
-    }
-
-    private static String createCardsJson(String blocked, String number, String type, String accountUuid) {
-        return "{ \"blocked\": \"" + blocked + "\", " +
-                "\"number\": \"" + number + "\", " +
-                "\"type\": \"" + type + "\", " +
-                "\"accountUuid\": \"" + accountUuid + "\"}";
-    }
-
-    private static String createCardsJson(String blocked, String number, String type) {
-        return "{ \"blocked\": \"" + blocked + "\", " +
-                "\"number\": \"" + number + "\", " +
-                "\"type\": \"" + type + "\"}";
-    }
-
-    private static String createCardsWithIncorrectParametersJson(String blocked, String number, String type) {
-        return "{ \"blocked1\": \"" + blocked + "\", " +
-                "\"number1\": \"" + number + "\", " +
-                "\"type1\": \"" + type + "\"}";
     }
 }
