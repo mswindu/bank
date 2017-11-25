@@ -24,10 +24,10 @@ public class Transaction {
     @Column(length = 36, nullable = false)
     private String uuid;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Account account;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Card card;
 
     @Enumerated(EnumType.STRING)

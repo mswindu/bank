@@ -1,6 +1,10 @@
 package com.snilov.bank;
 
+import com.snilov.bank.account.AccountRepository;
+import com.snilov.bank.card.CardRepository;
+import com.snilov.bank.transaction.TransactionRepository;
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,10 +34,26 @@ public class TransactionControllerTests {
 
     private MockMvc mockMvc;
 
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     @Before
     public void setup() {
         DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
         this.mockMvc = builder.build();
+    }
+
+    @After
+    public void tearDown() {
+        transactionRepository.deleteAll();
+        cardRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test

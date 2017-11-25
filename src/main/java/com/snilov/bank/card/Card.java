@@ -23,14 +23,14 @@ public class Card implements Serializable {
     @Column(length = 36, nullable = false)
     private String uuid;
 
-    @Column(length = 16, nullable = false)
+    @Column(length = 16, nullable = false, unique = true)
     private String number;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TypeCard type;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @GeneratedValue
     private Account account;
 
