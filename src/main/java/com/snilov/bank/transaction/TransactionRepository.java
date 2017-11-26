@@ -1,6 +1,11 @@
 package com.snilov.bank.transaction;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RestResource;
 
-public interface TransactionRepository extends JpaRepository<Transaction, String> {
+public interface TransactionRepository extends CrudRepository<Transaction, String> {
+
+    @Override
+    @RestResource(exported = false)
+    void delete(Transaction entity);
 }
