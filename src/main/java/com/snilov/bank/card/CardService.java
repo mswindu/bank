@@ -5,6 +5,7 @@ import com.snilov.bank.account.Account;
 import com.snilov.bank.account.Account.Currency;
 import com.snilov.bank.account.AccountRepository;
 import com.snilov.bank.exception.ThereIsNoSuchAccountException;
+import com.snilov.bank.exception.ThereIsNoSuchCardException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,5 +46,38 @@ public class CardService {
         card.setAccount(accountRepository.save(account));
 
         return cardRepository.save(card);
+    }
+
+    public Card blockedCard(String uuidCard) {
+        Card card = getCard(uuidCard);
+
+        if (!card.getBlocked()) {
+            card.setBlocked(true);
+            cardRepository.save(card);
+        }
+
+        return card;
+    }
+
+    public Card unblockedCard(String uuidCard) {
+        Card card = getCard(uuidCard);
+
+        if (card.getBlocked()) {
+            card.setBlocked(false);
+            cardRepository.save(card);
+        }
+
+        return card;
+    }
+
+    private Card getCard(String uuidCard) {
+        Card card;
+        Optional<Card> foundCard = cardRepository.findById(uuidCard);
+        if (foundCard.isPresent())
+            card = foundCard.get();
+        else
+            throw new ThereIsNoSuchCardException("There is no such card");
+
+        return card;
     }
 }

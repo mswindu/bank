@@ -21,7 +21,9 @@ import static com.snilov.bank.Utils.createAccountJson;
 import static com.snilov.bank.Utils.createCardsJson;
 import static com.snilov.bank.Utils.createCardsWithIncorrectParametersJson;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,5 +116,57 @@ public class CardControllerTests {
                 .andExpect(jsonPath("$.errors.number").value("Number card cannot be empty"))
                 .andExpect(jsonPath("$.errors.blocked").value("Blocked status cannot be empty"))
                 .andExpect(jsonPath("$.errors.type").value("Type card cannot be empty"));
+    }
+
+    @Test
+    public void testSetBlockedStateCard() throws Exception {
+        MvcResult result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("false", "1", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(put("/cards/" + uuidCard + "/block"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get("/cards/" + uuidCard))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.blocked").value("true"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"));
+    }
+
+    @Test
+    public void testSetUnblockedStateCard() throws Exception {
+        MvcResult result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("true", "1", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("true"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(put("/cards/" + uuidCard + "/unblock"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get("/cards/" + uuidCard))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"));
     }
 }

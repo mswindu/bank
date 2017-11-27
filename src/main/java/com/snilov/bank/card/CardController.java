@@ -5,12 +5,11 @@ import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Controller
+@RepositoryRestController
 public class CardController {
 
     private final CardService cardService;
@@ -26,5 +25,19 @@ public class CardController {
     public PersistentEntityResource createNewCard(@Valid @RequestBody CreateCardRequestBody createCardRequestBody, PersistentEntityResourceAssembler asm) {
         System.out.println(createCardRequestBody);
         return asm.toFullResource(cardService.createNewCard(createCardRequestBody));
+    }
+
+    @PutMapping(value = "/cards/{uuidCard}/block")
+    @ResponseBody
+    public PersistentEntityResource blockedCard(@PathVariable String uuidCard, PersistentEntityResourceAssembler asm) {
+        System.out.println("blockedCard = " + uuidCard);
+        return asm.toFullResource(cardService.blockedCard(uuidCard));
+    }
+
+    @PutMapping(value = "/cards/{uuidCard}/unblock")
+    @ResponseBody
+    public PersistentEntityResource unblockedCard(@PathVariable String uuidCard, PersistentEntityResourceAssembler asm) {
+        System.out.println("unblockedCard = " + uuidCard);
+        return asm.toFullResource(cardService.unblockedCard(uuidCard));
     }
 }
