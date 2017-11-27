@@ -1,16 +1,19 @@
 package com.snilov.bank.exception;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @ControllerAdvice
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
@@ -33,13 +36,28 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
                                                                          HttpHeaders headers, HttpStatus status, WebRequest request) {
         StringBuilder builder = new StringBuilder();
-        builder.append(ex.getMethod());
-        builder.append(" method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(t -> builder.append(t).append(" "));
-
+        Set<HttpMethod> set = ex.getSupportedHttpMethods();
         Map<String, String> errors = new HashMap<>();
+
+        builder.append(ex.getMethod());
+        builder.append(" method is not supported for this request.");
+
+        if (set != null) {
+            builder.append(" Supported methods are ");
+            set.forEach(t -> builder.append(t).append(" "));
+        }
+
         errors.put("description", builder.toString());
+
         return new ResponseEntity<>(new ResponseException(ex.getMessage(), errors), HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(ex.getRequestURL(), "Not found");
+        return new ResponseEntity<>(new ResponseException(ex.getMessage(), errors), HttpStatus.NOT_FOUND);
     }
 
 }
