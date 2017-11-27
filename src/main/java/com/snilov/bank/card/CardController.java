@@ -27,17 +27,17 @@ public class CardController {
         return asm.toFullResource(cardService.createNewCard(createCardRequestBody));
     }
 
-    @PutMapping(value = "/cards/{uuidCard}/block")
+    @PutMapping(value = "/cards/{uuidCard}/blocking")
     @ResponseBody
-    public PersistentEntityResource blockedCard(@PathVariable String uuidCard, PersistentEntityResourceAssembler asm) {
-        System.out.println("blockedCard = " + uuidCard);
-        return asm.toFullResource(cardService.blockedCard(uuidCard));
+    public PersistentEntityResource blockingCard(@PathVariable String uuidCard, PersistentEntityResourceAssembler asm) {
+        System.out.println("blockingCard = " + uuidCard);
+        return asm.toFullResource(cardService.blockingCard(uuidCard));
     }
 
-    @PutMapping(value = "/cards/{uuidCard}/unblock")
+    @PutMapping(value = "/cards/{uuidCard}/unblocking")
     @ResponseBody
     public PersistentEntityResource unblockedCard(@PathVariable String uuidCard, PersistentEntityResourceAssembler asm) {
-        System.out.println("unblockedCard = " + uuidCard);
-        return asm.toFullResource(cardService.unblockedCard(uuidCard));
+        System.out.println("unblockingCard = " + uuidCard);
+        return asm.toFullResource(cardService.unblockingCard(uuidCard));
     }
 }

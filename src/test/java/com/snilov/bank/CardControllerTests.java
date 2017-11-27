@@ -132,7 +132,7 @@ public class CardControllerTests {
 
         String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
 
-        this.mockMvc.perform(put("/cards/" + uuidCard + "/block"))
+        this.mockMvc.perform(put("/cards/" + uuidCard + "/blocking"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -158,7 +158,7 @@ public class CardControllerTests {
 
         String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
 
-        this.mockMvc.perform(put("/cards/" + uuidCard + "/unblock"))
+        this.mockMvc.perform(put("/cards/" + uuidCard + "/unblocking"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
