@@ -299,4 +299,36 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.amountBefore").value("10"))
                 .andExpect(jsonPath("$.amountAfter").value("5"));
     }
+
+    @Test
+    public void testCreateNewTransactionWithNotExistsCard() throws Exception {
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson("1234567", "DEPOSIT", "10")))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("There is no such card"));
+    }
+
+    @Test
+    public void testCreateNewTransactionWithBlockedCard() throws Exception {
+        MvcResult result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("true", "1", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("true"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard, "DEPOSIT", "10")))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Card is blocked: " + uuidCard));
+    }
 }

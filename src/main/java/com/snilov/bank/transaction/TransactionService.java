@@ -1,6 +1,7 @@
 package com.snilov.bank.transaction;
 
 import com.snilov.bank.account.AccountRepository;
+import com.snilov.bank.exception.CardIsBlockedException;
 import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.card.Card;
 import com.snilov.bank.card.CardRepository;
@@ -34,6 +35,9 @@ public class TransactionService {
             card = foundCard.get();
         else
             throw new ThereIsNoSuchAccountException("There is no such card");
+
+        if (card.getBlocked())
+            throw new CardIsBlockedException("Card is blocked: " + transactionRequestBody.getUuidCard());
 
         Integer transactionAmount = transactionRequestBody.getTransactionAmount();
 

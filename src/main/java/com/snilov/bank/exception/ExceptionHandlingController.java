@@ -20,12 +20,18 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler({
             BindingResultException.class,
-            ThereIsNoSuchAccountException.class
+            ThereIsNoSuchAccountException.class,
+            ThereIsNoSuchCardException.class,
+            CardIsBlockedException.class
     })
     public ResponseEntity<Object> applicationHandleException(Exception ex) {
         if (ex instanceof BindingResultException) {
             return new ResponseEntity<>(new ResponseException("Invalid parameters specified.", ((BindingResultException) ex).getErrors()), HttpStatus.BAD_REQUEST);
         } else if (ex instanceof ThereIsNoSuchAccountException) {
+            return new ResponseEntity<>(new ResponseException(ex.getMessage()), HttpStatus.NOT_FOUND);
+        } else if (ex instanceof ThereIsNoSuchCardException) {
+            return new ResponseEntity<>(new ResponseException(ex.getMessage()), HttpStatus.NOT_FOUND);
+        } else if (ex instanceof CardIsBlockedException) {
             return new ResponseEntity<>(new ResponseException(ex.getMessage()), HttpStatus.NOT_FOUND);
         }
 
