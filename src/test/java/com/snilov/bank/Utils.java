@@ -41,7 +41,7 @@ public class Utils {
 
     public static String createTransactionsWithIncorrectParametersJson(String uuidCard, String typeTransaction, String transactionAmount) {
         return "{ \"uuidCard1\": \"" + uuidCard + "\", " +
-                "\"typeTransaction\": \"" + typeTransaction + "\", " +
+                "\"typeTransaction1\": \"" + typeTransaction + "\", " +
                 "\"transactionAmount1\": \"" + transactionAmount + "\"}";
     }
 }

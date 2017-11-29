@@ -1,10 +1,13 @@
 package com.snilov.bank.transaction;
 
+import com.snilov.bank.account.Account;
 import com.snilov.bank.account.AccountRepository;
+import com.snilov.bank.exception.CanNotCancelTransactionAgainException;
 import com.snilov.bank.exception.CardIsBlockedException;
 import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.card.Card;
 import com.snilov.bank.card.CardRepository;
+import com.snilov.bank.exception.ThereIsNoSuchTransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +44,6 @@ public class TransactionService {
 
         Integer transactionAmount = transactionRequestBody.getTransactionAmount();
 
-        if (transactionRequestBody.getTypeTransaction() == Transaction.TypeTransaction.WITHDRAW)
-            transactionAmount *= -1;
-
         Integer amountBefore = card.getAccount().getBalance();
 
         card.getAccount().setBalance(amountBefore + transactionAmount);
@@ -51,8 +51,34 @@ public class TransactionService {
 
         return transactionRepository.save(
                 new Transaction(card.getAccount(), card, transactionRequestBody.getTypeTransaction(),
-                        transactionRequestBody.getTransactionAmount(), new Date(), amountBefore,
-                        amountBefore + transactionAmount
+                        transactionAmount, new Date(), amountBefore, amountBefore + transactionAmount
                 ));
+    }
+
+    public Transaction rollbackTransaction(String uuidTransaction) {
+        Transaction transaction;
+        Optional<Transaction> foundTransaction = transactionRepository.findById(uuidTransaction);
+        if (foundTransaction.isPresent())
+            transaction = foundTransaction.get();
+        else
+            throw new ThereIsNoSuchTransactionException("There is no such transaction");
+
+        if (transaction.getLinkedTransaction() != null)
+            throw new CanNotCancelTransactionAgainException("You can not cancel the transaction again");
+
+        Integer amountBefore = transaction.getAccount().getBalance();
+
+        Account account = transaction.getAccount();
+
+        account.setBalance(amountBefore - transaction.getTransactionAmount());
+
+        accountRepository.save(account);
+
+        transaction.setCanceled(true);
+        transactionRepository.save(transaction);
+
+        return transactionRepository.save(new Transaction(transaction.getAccount(), transaction.getCard(), transaction, Transaction.TypeTransaction.ROLLBACK,
+                -transaction.getTransactionAmount(), new Date(), amountBefore, amountBefore - transaction.getTransactionAmount()
+        ));
     }
 }

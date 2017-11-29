@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 public class Transaction {
 
-    public enum TypeTransaction {DEPOSIT, WITHDRAW}
+    public enum TypeTransaction {DEPOSIT, WITHDRAW, ROLLBACK}
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -29,6 +29,9 @@ public class Transaction {
 
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Card card;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Transaction linkedTransaction;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,6 +48,21 @@ public class Transaction {
 
     @Column(nullable = false)
     private Integer amountAfter;
+
+    @Column
+    private boolean isCanceled;
+
+    public Transaction(Account account, Card card, Transaction linkedTransaction, TypeTransaction typeTransaction,
+                       Integer transactionAmount, Date transactionDate, Integer amountBefore, Integer amountAfter) {
+        this.account = account;
+        this.card = card;
+        this.linkedTransaction = linkedTransaction;
+        this.typeTransaction = typeTransaction;
+        this.transactionAmount = transactionAmount;
+        this.transactionDate = transactionDate;
+        this.amountBefore = amountBefore;
+        this.amountAfter = amountAfter;
+    }
 
     public Transaction(Account account, Card card, TypeTransaction typeTransaction, Integer transactionAmount,
                        Date transactionDate, Integer amountBefore, Integer amountAfter) {

@@ -28,4 +28,12 @@ public class TransactionController {
 
         return asm.toFullResource(transactionService.createNewTransaction(transactionRequestBody));
     }
+
+    @PostMapping(value = "/transactions/{uuidTransaction}/rollback")
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public PersistentEntityResource rollbackTransaction(@PathVariable String uuidTransaction, PersistentEntityResourceAssembler asm) {
+        System.out.println("rollbackTransaction = " + uuidTransaction);
+        return asm.toFullResource(transactionService.rollbackTransaction(uuidTransaction));
+    }
 }
