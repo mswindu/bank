@@ -1,5 +1,6 @@
-package com.snilov.bank.account;
+package com.snilov.bank.repository;
 
+import com.snilov.bank.entity.Account;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RestResource;
 

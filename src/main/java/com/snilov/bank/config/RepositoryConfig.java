@@ -1,8 +1,8 @@
 package com.snilov.bank.config;
 
-import com.snilov.bank.account.Account;
-import com.snilov.bank.card.Card;
-import com.snilov.bank.transaction.Transaction;
+import com.snilov.bank.entity.Account;
+import com.snilov.bank.entity.Card;
+import com.snilov.bank.entity.Transaction;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;

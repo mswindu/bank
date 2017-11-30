@@ -1,4 +1,4 @@
-package com.snilov.bank.account;
+package com.snilov.bank.entity;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

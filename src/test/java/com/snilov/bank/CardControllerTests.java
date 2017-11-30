@@ -1,7 +1,7 @@
 package com.snilov.bank;
 
-import com.snilov.bank.account.AccountRepository;
-import com.snilov.bank.card.CardRepository;
+import com.snilov.bank.repository.AccountRepository;
+import com.snilov.bank.repository.CardRepository;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;

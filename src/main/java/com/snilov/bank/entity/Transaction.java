@@ -1,9 +1,6 @@
-package com.snilov.bank.transaction;
+package com.snilov.bank.entity;
 
-import com.snilov.bank.account.Account;
-import com.snilov.bank.card.Card;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

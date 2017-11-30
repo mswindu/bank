@@ -1,18 +1,21 @@
-package com.snilov.bank.card;
+package com.snilov.bank.service;
 
 
-import com.snilov.bank.account.Account;
-import com.snilov.bank.account.Account.Currency;
-import com.snilov.bank.account.AccountRepository;
+import com.snilov.bank.entity.Account;
+import com.snilov.bank.entity.Account.Currency;
+import com.snilov.bank.repository.AccountRepository;
+import com.snilov.bank.requestBody.CreateCardRequestBody;
+import com.snilov.bank.entity.Card;
 import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.exception.ThereIsNoSuchCardException;
+import com.snilov.bank.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.snilov.bank.account.Account.*;
+import static com.snilov.bank.entity.Account.*;
 
 @Service
 @Transactional

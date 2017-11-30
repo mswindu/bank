@@ -1,5 +1,6 @@
-package com.snilov.bank.transaction;
+package com.snilov.bank.requestBody;
 
+import com.snilov.bank.entity.Transaction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

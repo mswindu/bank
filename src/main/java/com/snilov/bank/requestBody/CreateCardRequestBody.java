@@ -1,10 +1,10 @@
-package com.snilov.bank.card;
+package com.snilov.bank.requestBody;
 
+import com.snilov.bank.entity.Card;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 

@@ -1,5 +1,7 @@
-package com.snilov.bank.transaction;
+package com.snilov.bank.controller;
 
+import com.snilov.bank.requestBody.TransactionRequestBody;
+import com.snilov.bank.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;

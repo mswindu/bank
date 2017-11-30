@@ -1,5 +1,7 @@
-package com.snilov.bank.card;
+package com.snilov.bank.controller;
 
+import com.snilov.bank.service.CardService;
+import com.snilov.bank.requestBody.CreateCardRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
