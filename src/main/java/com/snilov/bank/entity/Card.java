@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
 @Entity
 public class Card implements Serializable {
 
@@ -40,5 +39,29 @@ public class Card implements Serializable {
         this.number = number;
         this.type = type;
         this.blocked = blocked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Card)) return false;
+
+        Card card = (Card) o;
+
+        if (!getUuid().equals(card.getUuid())) return false;
+        if (!getNumber().equals(card.getNumber())) return false;
+        if (getType() != card.getType()) return false;
+        if (!getAccount().equals(card.getAccount())) return false;
+        return getBlocked().equals(card.getBlocked());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getUuid().hashCode();
+        result = 31 * result + getNumber().hashCode();
+        result = 31 * result + getType().hashCode();
+        result = 31 * result + getAccount().hashCode();
+        result = 31 * result + getBlocked().hashCode();
+        return result;
     }
 }

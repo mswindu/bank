@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
 @Entity
 public class Account implements Serializable {
 
@@ -44,5 +43,29 @@ public class Account implements Serializable {
         this.currency = currency;
         this.balance = balance;
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account)) return false;
+        if (!super.equals(o)) return false;
+
+        Account account = (Account) o;
+
+        if (!getUuid().equals(account.getUuid())) return false;
+        if (getCurrency() != account.getCurrency()) return false;
+        if (!getBalance().equals(account.getBalance())) return false;
+        return getType() == account.getType();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + getUuid().hashCode();
+        result = 31 * result + getCurrency().hashCode();
+        result = 31 * result + getBalance().hashCode();
+        result = 31 * result + getType().hashCode();
+        return result;
     }
 }

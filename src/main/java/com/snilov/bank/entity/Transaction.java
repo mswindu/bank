@@ -10,7 +10,6 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
 @Entity
 public class Transaction {
 
@@ -73,5 +72,42 @@ public class Transaction {
         this.amountBefore = amountBefore;
         this.amountAfter = amountAfter;
         this.isCanceled = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Transaction)) return false;
+        if (!super.equals(o)) return false;
+
+        Transaction that = (Transaction) o;
+
+        if (!getUuid().equals(that.getUuid())) return false;
+        if (!getAccount().equals(that.getAccount())) return false;
+        if (!getCard().equals(that.getCard())) return false;
+        if (getLinkedTransaction() != null ? !getLinkedTransaction().equals(that.getLinkedTransaction()) : that.getLinkedTransaction() != null)
+            return false;
+        if (getTypeTransaction() != that.getTypeTransaction()) return false;
+        if (!getTransactionAmount().equals(that.getTransactionAmount())) return false;
+        if (!getTransactionDate().equals(that.getTransactionDate())) return false;
+        if (!getAmountBefore().equals(that.getAmountBefore())) return false;
+        if (!getAmountAfter().equals(that.getAmountAfter())) return false;
+        return getIsCanceled().equals(that.getIsCanceled());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + getUuid().hashCode();
+        result = 31 * result + getAccount().hashCode();
+        result = 31 * result + getCard().hashCode();
+        result = 31 * result + (getLinkedTransaction() != null ? getLinkedTransaction().hashCode() : 0);
+        result = 31 * result + getTypeTransaction().hashCode();
+        result = 31 * result + getTransactionAmount().hashCode();
+        result = 31 * result + getTransactionDate().hashCode();
+        result = 31 * result + getAmountBefore().hashCode();
+        result = 31 * result + getAmountAfter().hashCode();
+        result = 31 * result + getIsCanceled().hashCode();
+        return result;
     }
 }
