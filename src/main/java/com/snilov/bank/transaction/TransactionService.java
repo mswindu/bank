@@ -63,7 +63,7 @@ public class TransactionService {
         else
             throw new ThereIsNoSuchTransactionException("There is no such transaction");
 
-        if (transaction.getLinkedTransaction() != null)
+        if (transaction.getIsCanceled())
             throw new CanNotCancelTransactionAgainException("You can not cancel the transaction again");
 
         Integer amountBefore = transaction.getAccount().getBalance();
@@ -74,7 +74,7 @@ public class TransactionService {
 
         accountRepository.save(account);
 
-        transaction.setCanceled(true);
+        transaction.setIsCanceled(true);
         transactionRepository.save(transaction);
 
         return transactionRepository.save(new Transaction(transaction.getAccount(), transaction.getCard(), transaction, Transaction.TypeTransaction.ROLLBACK,

@@ -3,6 +3,7 @@ package com.snilov.bank.transaction;
 import com.snilov.bank.account.Account;
 import com.snilov.bank.card.Card;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -50,7 +51,7 @@ public class Transaction {
     private Integer amountAfter;
 
     @Column
-    private boolean isCanceled;
+    private Boolean isCanceled;
 
     public Transaction(Account account, Card card, Transaction linkedTransaction, TypeTransaction typeTransaction,
                        Integer transactionAmount, Date transactionDate, Integer amountBefore, Integer amountAfter) {
@@ -62,6 +63,7 @@ public class Transaction {
         this.transactionDate = transactionDate;
         this.amountBefore = amountBefore;
         this.amountAfter = amountAfter;
+        this.isCanceled = false;
     }
 
     public Transaction(Account account, Card card, TypeTransaction typeTransaction, Integer transactionAmount,
@@ -73,5 +75,6 @@ public class Transaction {
         this.transactionDate = transactionDate;
         this.amountBefore = amountBefore;
         this.amountAfter = amountAfter;
+        this.isCanceled = false;
     }
 }

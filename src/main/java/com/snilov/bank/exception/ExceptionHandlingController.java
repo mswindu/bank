@@ -22,7 +22,8 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
             BindingResultException.class,
             ThereIsNoSuchAccountException.class,
             ThereIsNoSuchCardException.class,
-            CardIsBlockedException.class
+            CardIsBlockedException.class,
+            CanNotCancelTransactionAgainException.class
     })
     public ResponseEntity<Object> applicationHandleException(Exception ex) {
         if (ex instanceof BindingResultException) {
@@ -33,6 +34,8 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
             return new ResponseEntity<>(new ResponseException(ex.getMessage()), HttpStatus.NOT_FOUND);
         } else if (ex instanceof CardIsBlockedException) {
             return new ResponseEntity<>(new ResponseException(ex.getMessage()), HttpStatus.NOT_FOUND);
+        } else if (ex instanceof CanNotCancelTransactionAgainException) {
+            return new ResponseEntity<>(new ResponseException(ex.getMessage()), HttpStatus.FORBIDDEN);
         }
 
         return ResponseEntity.noContent().build();

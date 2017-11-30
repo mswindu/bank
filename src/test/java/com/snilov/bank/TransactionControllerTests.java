@@ -386,4 +386,43 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.amountBefore").value("1110"))
                 .andExpect(jsonPath("$.amountAfter").value("1010"));
     }
+
+    @Test
+    public void testRollbackAgainTransaction() throws Exception {
+        MvcResult result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("false", "1", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        result = this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard, "DEPOSIT", "100")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("100"))
+                .andExpect(jsonPath("$.amountBefore").value("0"))
+                .andExpect(jsonPath("$.amountAfter").value("100"))
+                .andReturn();
+
+        String uuidTransaction = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(post("/transactions/" + uuidTransaction + "/rollback"))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("-100"))
+                .andExpect(jsonPath("$.amountBefore").value("100"))
+                .andExpect(jsonPath("$.amountAfter").value("0"));
+
+        this.mockMvc.perform(post("/transactions/" + uuidTransaction + "/rollback"))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("You can not cancel the transaction again"));
+    }
 }
