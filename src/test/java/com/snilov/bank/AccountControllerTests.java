@@ -62,4 +62,13 @@ public class AccountControllerTests {
                 .andExpect(jsonPath("$.errors.currency").value("Currency cannot be empty"))
                 .andExpect(jsonPath("$.errors.type").value("Account type cannot be empty"));
     }
+
+    @Test
+    public void testInvalidRequest() throws Exception {
+        this.mockMvc.perform(post("/account")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createAccountJson("RUR", "0", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
