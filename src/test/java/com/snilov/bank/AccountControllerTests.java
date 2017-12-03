@@ -123,6 +123,27 @@ public class AccountControllerTests {
                 .andExpect(jsonPath("$.number").value("2"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
 
+        result = this.mockMvc.perform(post("/accounts")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createAccountJson("RUR", "0", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.currency").value("RUR"))
+                .andExpect(jsonPath("$.balance").value("0"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidAccount2 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("false", "3", "DEBIT", uuidAccount2)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("3"))
+                .andExpect(jsonPath("$.type").value("DEBIT"));
+
         this.mockMvc.perform(get("/accounts/" + uuidAccount + "/findCard"))
                 .andDo(print())
                 .andExpect(status().isOk())
