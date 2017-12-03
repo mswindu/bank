@@ -51,7 +51,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
         builder.append(ex.getMethod());
         builder.append(" method is not supported for this request.");
 
-        if (set != null) {
+        if (!set.isEmpty()) {
             builder.append(" Supported methods are ");
             set.forEach(t -> builder.append(t).append(" "));
         }
