@@ -23,7 +23,7 @@ public class Transaction {
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Account account;
 
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Card card;
 
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -99,7 +99,7 @@ public class Transaction {
         int result = super.hashCode();
         result = 31 * result + getUuid().hashCode();
         result = 31 * result + getAccount().hashCode();
-        result = 31 * result + getCard().hashCode();
+        result = 31 * result + (getCard() != null ? getCard().hashCode() : 0);
         result = 31 * result + (getLinkedTransaction() != null ? getLinkedTransaction().hashCode() : 0);
         result = 31 * result + getTypeTransaction().hashCode();
         result = 31 * result + getTransactionAmount().hashCode();

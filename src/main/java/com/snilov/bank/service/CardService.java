@@ -6,7 +6,6 @@ import com.snilov.bank.model.enums.CurrencyEnum;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.requestBody.CreateCardRequestBody;
 import com.snilov.bank.model.Card;
-import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.exception.ThereIsNoSuchCardException;
 import com.snilov.bank.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,9 @@ public class CardService {
     private final AccountRepository accountRepository;
 
     @Autowired
+    private AccountService accountService;
+
+    @Autowired
     public CardService(CardRepository cardRepository, AccountRepository accountRepository) {
         this.cardRepository = cardRepository;
         this.accountRepository = accountRepository;
@@ -35,11 +37,7 @@ public class CardService {
         String uuid = createCardRequestBody.getAccountUuid();
 
         if (uuid != null && !uuid.isEmpty()) {
-            Optional<Account> foundAccount = accountRepository.findById(uuid);
-            if (foundAccount.isPresent())
-                account = foundAccount.get();
-            else
-                throw new ThereIsNoSuchAccountException("There is no such account");
+            account = accountService.getAccount(uuid);
         } else {
             account = new Account(CurrencyEnum.RUR, 0, AccountTypeEnum.DEBIT);
         }
@@ -71,7 +69,7 @@ public class CardService {
         return card;
     }
 
-    private Card getCard(String uuidCard) {
+    public Card getCard(String uuidCard) {
         Card card;
         Optional<Card> foundCard = cardRepository.findById(uuidCard);
         if (foundCard.isPresent())

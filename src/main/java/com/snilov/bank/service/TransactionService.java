@@ -3,20 +3,22 @@ package com.snilov.bank.service;
 import com.snilov.bank.model.Account;
 import com.snilov.bank.model.Transaction;
 import com.snilov.bank.model.enums.TypeTransactionEnum;
+import com.snilov.bank.model.enums.TypeTransferEnum;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.exception.CanNotCancelTransactionAgainException;
 import com.snilov.bank.exception.CardIsBlockedException;
-import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.model.Card;
-import com.snilov.bank.repository.CardRepository;
 import com.snilov.bank.exception.ThereIsNoSuchTransactionException;
 import com.snilov.bank.repository.TransactionRepository;
 import com.snilov.bank.requestBody.TransactionRequestBody;
+import com.snilov.bank.requestBody.TransferRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,24 +26,22 @@ import java.util.Optional;
 public class TransactionService {
     private final AccountRepository accountRepository;
 
-    private final CardRepository cardRepository;
-
     private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionService(CardRepository cardRepository, TransactionRepository transactionRepository, AccountRepository accountRepository) {
-        this.cardRepository = cardRepository;
+    private AccountService accountService;
+
+    @Autowired
+    private CardService cardService;
+
+    @Autowired
+    public TransactionService(TransactionRepository transactionRepository, AccountRepository accountRepository) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
     }
 
     public Transaction createNewTransaction(TransactionRequestBody transactionRequestBody) {
-        Card card;
-        Optional<Card> foundCard = cardRepository.findById(transactionRequestBody.getUuidCard());
-        if (foundCard.isPresent())
-            card = foundCard.get();
-        else
-            throw new ThereIsNoSuchAccountException("There is no such card");
+        Card card = cardService.getCard(transactionRequestBody.getUuidCard());
 
         if (card.getBlocked())
             throw new CardIsBlockedException("Card is blocked: " + transactionRequestBody.getUuidCard());
@@ -60,12 +60,7 @@ public class TransactionService {
     }
 
     public Transaction rollbackTransaction(String uuidTransaction) {
-        Transaction transaction;
-        Optional<Transaction> foundTransaction = transactionRepository.findById(uuidTransaction);
-        if (foundTransaction.isPresent())
-            transaction = foundTransaction.get();
-        else
-            throw new ThereIsNoSuchTransactionException("There is no such transaction");
+        Transaction transaction = getTransaction(uuidTransaction);
 
         if (transaction.getIsCanceled())
             throw new CanNotCancelTransactionAgainException("You can not cancel the transaction again");
@@ -84,5 +79,81 @@ public class TransactionService {
         return transactionRepository.save(new Transaction(transaction.getAccount(), transaction.getCard(), transaction, TypeTransactionEnum.ROLLBACK,
                 -transaction.getTransactionAmount(), new Date(), amountBefore, amountBefore - transaction.getTransactionAmount()
         ));
+    }
+
+    public List<Transaction> transfer(TransferRequestBody transferRequestBody) {
+        if (transferRequestBody.getTypeTransferEnum() == TypeTransferEnum.C2C) {
+            return transferC2C(transferRequestBody);
+        } else if (transferRequestBody.getTypeTransferEnum() == TypeTransferEnum.A2A) {
+            return transferA2A(transferRequestBody);
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    private Transaction getTransaction(String uuidTransaction) {
+        Transaction transaction;
+        Optional<Transaction> foundTransaction = transactionRepository.findById(uuidTransaction);
+        if (foundTransaction.isPresent())
+            transaction = foundTransaction.get();
+        else
+            throw new ThereIsNoSuchTransactionException("There is no such transaction");
+
+        return transaction;
+    }
+
+    private Transaction createNewTransaction(Account account, TypeTransactionEnum typeTransaction, Integer transactionAmount) {
+        Integer amountBefore = account.getBalance();
+
+        account.setBalance(amountBefore + transactionAmount);
+
+        return transactionRepository.save(
+                new Transaction(account, null, typeTransaction,
+                        transactionAmount, new Date(), amountBefore, amountBefore + transactionAmount
+                ));
+    }
+
+    private Transaction createNewTransaction(Card card, TypeTransactionEnum typeTransaction, Integer transactionAmount) {
+        Account account = card.getAccount();
+        Integer amountBefore = account.getBalance();
+
+        account.setBalance(amountBefore + transactionAmount);
+
+        return transactionRepository.save(
+                new Transaction(account, card, typeTransaction,
+                        transactionAmount, new Date(), amountBefore, amountBefore + transactionAmount
+                ));
+    }
+
+    private List<Transaction> transferA2A(TransferRequestBody transferRequestBody) {
+        List<Transaction> transactions = new LinkedList<>();
+
+        transactions.add(createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayer()),
+                TypeTransactionEnum.WITHDRAW,
+                -transferRequestBody.getAmount()
+        ));
+
+        transactions.add(createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayee()),
+                TypeTransactionEnum.DEPOSIT,
+                transferRequestBody.getAmount()
+        ));
+
+        return transactions;
+    }
+
+    private List<Transaction> transferC2C(TransferRequestBody transferRequestBody) {
+        List<Transaction> transactions = new LinkedList<>();
+
+        transactions.add(createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayer()),
+                TypeTransactionEnum.WITHDRAW,
+                -transferRequestBody.getAmount()
+        ));
+
+        transactions.add(createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayee()),
+                TypeTransactionEnum.DEPOSIT,
+                transferRequestBody.getAmount()
+        ));
+
+        return transactions;
     }
 }

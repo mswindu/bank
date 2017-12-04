@@ -1,5 +1,6 @@
 package com.snilov.bank.service;
 
+import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.model.Account;
 import com.snilov.bank.model.Card;
 import com.snilov.bank.repository.AccountRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,5 +32,13 @@ public class AccountService {
 
     public List<Card> findCards(String uuidAccount) {
         return cardRepository.findCardsByAccount_Uuid(uuidAccount);
+    }
+
+    public Account getAccount(String uuidAccount) {
+        Optional<Account> foundAccount = accountRepository.findById(uuidAccount);
+        if (foundAccount.isPresent())
+            return foundAccount.get();
+        else
+            throw new ThereIsNoSuchAccountException("There is no such account");
     }
 }
