@@ -1,5 +1,6 @@
-package com.snilov.bank.entity;
+package com.snilov.bank.model;
 
+import com.snilov.bank.model.enums.TypeCardEnum;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -13,8 +14,6 @@ import java.io.Serializable;
 @Entity
 public class Card implements Serializable {
 
-    public enum TypeCard {DEBIT, CREDIT}
-
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -26,7 +25,7 @@ public class Card implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TypeCard type;
+    private TypeCardEnum type;
 
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @GeneratedValue
@@ -35,7 +34,7 @@ public class Card implements Serializable {
     @Column(nullable = false)
     private Boolean blocked;
 
-    public Card(String number, TypeCard type, Boolean blocked) {
+    public Card(String number, TypeCardEnum type, Boolean blocked) {
         this.number = number;
         this.type = type;
         this.blocked = blocked;

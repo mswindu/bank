@@ -1,11 +1,11 @@
 package com.snilov.bank.service;
 
-
-import com.snilov.bank.entity.Account;
-import com.snilov.bank.entity.Account.Currency;
+import com.snilov.bank.model.Account;
+import com.snilov.bank.model.enums.AccountTypeEnum;
+import com.snilov.bank.model.enums.CurrencyEnum;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.requestBody.CreateCardRequestBody;
-import com.snilov.bank.entity.Card;
+import com.snilov.bank.model.Card;
 import com.snilov.bank.exception.ThereIsNoSuchAccountException;
 import com.snilov.bank.exception.ThereIsNoSuchCardException;
 import com.snilov.bank.repository.CardRepository;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static com.snilov.bank.entity.Account.*;
 
 @Service
 @Transactional
@@ -43,7 +41,7 @@ public class CardService {
             else
                 throw new ThereIsNoSuchAccountException("There is no such account");
         } else {
-            account = new Account(Currency.RUR, 0, AccountType.DEBIT);
+            account = new Account(CurrencyEnum.RUR, 0, AccountTypeEnum.DEBIT);
         }
 
         card.setAccount(accountRepository.save(account));

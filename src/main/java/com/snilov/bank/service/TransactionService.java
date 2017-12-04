@@ -1,12 +1,13 @@
 package com.snilov.bank.service;
 
-import com.snilov.bank.entity.Account;
-import com.snilov.bank.entity.Transaction;
+import com.snilov.bank.model.Account;
+import com.snilov.bank.model.Transaction;
+import com.snilov.bank.model.enums.TypeTransactionEnum;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.exception.CanNotCancelTransactionAgainException;
 import com.snilov.bank.exception.CardIsBlockedException;
 import com.snilov.bank.exception.ThereIsNoSuchAccountException;
-import com.snilov.bank.entity.Card;
+import com.snilov.bank.model.Card;
 import com.snilov.bank.repository.CardRepository;
 import com.snilov.bank.exception.ThereIsNoSuchTransactionException;
 import com.snilov.bank.repository.TransactionRepository;
@@ -80,7 +81,7 @@ public class TransactionService {
         transaction.setIsCanceled(true);
         transactionRepository.save(transaction);
 
-        return transactionRepository.save(new Transaction(transaction.getAccount(), transaction.getCard(), transaction, Transaction.TypeTransaction.ROLLBACK,
+        return transactionRepository.save(new Transaction(transaction.getAccount(), transaction.getCard(), transaction, TypeTransactionEnum.ROLLBACK,
                 -transaction.getTransactionAmount(), new Date(), amountBefore, amountBefore - transaction.getTransactionAmount()
         ));
     }

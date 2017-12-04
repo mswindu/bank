@@ -1,5 +1,7 @@
-package com.snilov.bank.entity;
+package com.snilov.bank.model;
 
+import com.snilov.bank.model.enums.AccountTypeEnum;
+import com.snilov.bank.model.enums.CurrencyEnum;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,10 +17,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Account implements Serializable {
 
-    public enum AccountType {DEBIT, CREDIT}
-
-    public enum Currency {RUR, EUR, USD}
-
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -28,7 +26,7 @@ public class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull(message = "Currency cannot be empty")
-    private Currency currency;
+    private CurrencyEnum currency;
 
     @Column(nullable = false)
     @NotNull(message = "Balance cannot be empty")
@@ -37,9 +35,9 @@ public class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull(message = "Account type cannot be empty")
-    private AccountType type;
+    private AccountTypeEnum type;
 
-    public Account(Currency currency, Integer balance, AccountType type) {
+    public Account(CurrencyEnum currency, Integer balance, AccountTypeEnum type) {
         this.currency = currency;
         this.balance = balance;
         this.type = type;

@@ -1,6 +1,6 @@
 package com.snilov.bank.requestBody;
 
-import com.snilov.bank.entity.Transaction;
+import com.snilov.bank.model.enums.TypeTransactionEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class TransactionRequestBody {
     private String uuidCard;
 
     @NotNull(message = "Transaction type cannot by empty")
-    private Transaction.TypeTransaction typeTransaction;
+    private TypeTransactionEnum typeTransaction;
 
     @NotNull(message = "Transaction amount cannot be empty")
     private Integer transactionAmount;
@@ -27,12 +27,12 @@ public class TransactionRequestBody {
     @AssertTrue(message = "Type transaction 'DEPOSIT' must be a positive number")
     private boolean isDepositOk() {
         if (transactionAmount == null || uuidCard == null || typeTransaction == null) return true;
-        return getTypeTransaction() != Transaction.TypeTransaction.DEPOSIT || getTransactionAmount() >= 0;
+        return getTypeTransaction() != TypeTransactionEnum.DEPOSIT || getTransactionAmount() >= 0;
     }
 
     @AssertTrue(message = "Type transaction 'WITHDRAW' must be a negative number")
     private boolean isWithdrawOk() {
         if (transactionAmount == null || uuidCard == null || typeTransaction == null) return true;
-        return getTypeTransaction() != Transaction.TypeTransaction.WITHDRAW || getTransactionAmount() <= 0;
+        return getTypeTransaction() != TypeTransactionEnum.WITHDRAW || getTransactionAmount() <= 0;
     }
 }

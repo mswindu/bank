@@ -1,6 +1,6 @@
 package com.snilov.bank.requestBody;
 
-import com.snilov.bank.entity.Card;
+import com.snilov.bank.model.enums.TypeCardEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +17,7 @@ public class CreateCardRequestBody {
     private String number;
 
     @NotNull(message = "Type card cannot be empty")
-    private Card.TypeCard type;
+    private TypeCardEnum type;
 
     @NotNull(message = "Blocked status cannot be empty")
     private Boolean blocked;

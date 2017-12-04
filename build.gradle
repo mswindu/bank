@@ -29,10 +29,13 @@ repositories {
 
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-data-rest')
-	compileOnly('org.projectlombok:lombok:1.16.18')
-	runtime('org.springframework.boot:spring-boot-devtools')
-	runtime('com.h2database:h2')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa',
+			'org.springframework.boot:spring-boot-starter-data-rest'
+
+	compileOnly 'org.projectlombok:lombok:1.16.18'
+
+	runtime 'org.springframework.boot:spring-boot-devtools',
+			'com.h2database:h2'
+
+	testCompile 'org.springframework.boot:spring-boot-starter-test'
 }

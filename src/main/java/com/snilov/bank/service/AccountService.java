@@ -1,7 +1,7 @@
 package com.snilov.bank.service;
 
-import com.snilov.bank.entity.Account;
-import com.snilov.bank.entity.Card;
+import com.snilov.bank.model.Account;
+import com.snilov.bank.model.Card;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;

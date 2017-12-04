@@ -1,8 +1,8 @@
 package com.snilov.bank.controller;
 
-import com.snilov.bank.entity.Card;
+import com.snilov.bank.model.Card;
 import com.snilov.bank.service.AccountService;
-import com.snilov.bank.entity.Account;
+import com.snilov.bank.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;

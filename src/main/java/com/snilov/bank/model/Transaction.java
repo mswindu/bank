@@ -1,5 +1,6 @@
-package com.snilov.bank.entity;
+package com.snilov.bank.model;
 
+import com.snilov.bank.model.enums.TypeTransactionEnum;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -12,8 +13,6 @@ import java.util.Date;
 @ToString
 @Entity
 public class Transaction {
-
-    public enum TypeTransaction {DEPOSIT, WITHDRAW, ROLLBACK}
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -32,7 +31,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TypeTransaction typeTransaction;
+    private TypeTransactionEnum typeTransaction;
 
     @Column(nullable = false)
     private Integer transactionAmount;
@@ -49,7 +48,7 @@ public class Transaction {
     @Column
     private Boolean isCanceled;
 
-    public Transaction(Account account, Card card, Transaction linkedTransaction, TypeTransaction typeTransaction,
+    public Transaction(Account account, Card card, Transaction linkedTransaction, TypeTransactionEnum typeTransaction,
                        Integer transactionAmount, Date transactionDate, Integer amountBefore, Integer amountAfter) {
         this.account = account;
         this.card = card;
@@ -62,7 +61,7 @@ public class Transaction {
         this.isCanceled = false;
     }
 
-    public Transaction(Account account, Card card, TypeTransaction typeTransaction, Integer transactionAmount,
+    public Transaction(Account account, Card card, TypeTransactionEnum typeTransaction, Integer transactionAmount,
                        Date transactionDate, Integer amountBefore, Integer amountAfter) {
         this.account = account;
         this.card = card;
