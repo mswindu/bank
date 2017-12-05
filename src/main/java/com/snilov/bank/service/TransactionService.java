@@ -65,9 +65,9 @@ public class TransactionService {
         if (transaction.getIsCanceled())
             throw new CanNotCancelTransactionAgainException("You can not cancel the transaction again");
 
-        Integer amountBefore = transaction.getAccount().getBalance();
-
         Account account = transaction.getAccount();
+
+        Integer amountBefore = account.getBalance();
 
         account.setBalance(amountBefore - transaction.getTransactionAmount());
 
@@ -75,6 +75,28 @@ public class TransactionService {
 
         transaction.setIsCanceled(true);
         transactionRepository.save(transaction);
+
+        // Пока решение в лоб, зацикливание происходит.
+        if (transaction.getTypeTransaction() == TypeTransactionEnum.TRANSFER && transaction.getLinkedTransaction() != null) {
+            Transaction transactionLinked = getTransaction(transaction.getLinkedTransaction().getUuid());
+            if (transactionLinked.getIsCanceled())
+                throw new CanNotCancelTransactionAgainException("You can not cancel the transaction again");
+
+            Account accountLinked = transactionLinked.getAccount();
+
+            Integer amountBeforeLinked = accountLinked.getBalance();
+
+            accountLinked.setBalance(amountBeforeLinked - transactionLinked.getTransactionAmount());
+
+            accountRepository.save(accountLinked);
+
+            transactionLinked.setIsCanceled(true);
+            transactionRepository.save(transactionLinked);
+
+            transactionRepository.save(new Transaction(transactionLinked.getAccount(), transactionLinked.getCard(), transactionLinked, TypeTransactionEnum.ROLLBACK,
+                    -transactionLinked.getTransactionAmount(), new Date(), amountBeforeLinked, amountBeforeLinked - transactionLinked.getTransactionAmount()
+            ));
+        }
 
         return transactionRepository.save(new Transaction(transaction.getAccount(), transaction.getCard(), transaction, TypeTransactionEnum.ROLLBACK,
                 -transaction.getTransactionAmount(), new Date(), amountBefore, amountBefore - transaction.getTransactionAmount()

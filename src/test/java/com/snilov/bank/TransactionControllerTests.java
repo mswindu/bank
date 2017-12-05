@@ -3,6 +3,7 @@ package com.snilov.bank;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.repository.CardRepository;
 import com.snilov.bank.repository.TransactionRepository;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -519,7 +520,7 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.amountAfter").value("10"))
                 .andExpect(jsonPath("$.isCanceled").value("false"));
 
-        this.mockMvc.perform(post("/transactions/transfer")
+        result = this.mockMvc.perform(post("/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransferJson("C2C", uuidCard1, uuidCard2, "10")))
                 .andDo(print())
@@ -534,7 +535,40 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$._embedded.transactions[1].transactionAmount").value("10"))
                 .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
                 .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
-                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"));
+                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"))
+                .andReturn();
+
+        JSONArray transactionJsonArray = (new JSONObject(result.getResponse().getContentAsString())).getJSONObject("_embedded").getJSONArray("transactions");
+
+        String uuidPayer = transactionJsonArray.getJSONObject(0).getString("uuid");
+        String uuidPayee = transactionJsonArray.getJSONObject(1).getString("uuid");
+
+        this.mockMvc.perform(post("/transactions/" + uuidPayer + "/rollback"))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("ROLLBACK"))
+                .andExpect(jsonPath("$.transactionAmount").value("10"))
+                .andExpect(jsonPath("$.amountBefore").value("0"))
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
+
+        this.mockMvc.perform(get("/transactions/" + uuidPayer))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$.transactionAmount").value("-10"))
+                .andExpect(jsonPath("$.amountBefore").value("10"))
+                .andExpect(jsonPath("$.amountAfter").value("0"))
+                .andExpect(jsonPath("$.isCanceled").value("true"));
+
+        this.mockMvc.perform(get("/transactions/" + uuidPayee))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$.transactionAmount").value("10"))
+                .andExpect(jsonPath("$.amountBefore").value("10"))
+                .andExpect(jsonPath("$.amountAfter").value("20"))
+                .andExpect(jsonPath("$.isCanceled").value("true"));
     }
 
     @Test
@@ -563,7 +597,7 @@ public class TransactionControllerTests {
 
         String uuidAccount2 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
 
-        this.mockMvc.perform(post("/transactions/transfer")
+        result = this.mockMvc.perform(post("/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransferJson("A2A", uuidAccount1, uuidAccount2, "10")))
                 .andDo(print())
@@ -578,6 +612,39 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$._embedded.transactions[1].transactionAmount").value("10"))
                 .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
                 .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
-                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"));
+                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"))
+                .andReturn();
+
+        JSONArray transactionJsonArray = (new JSONObject(result.getResponse().getContentAsString())).getJSONObject("_embedded").getJSONArray("transactions");
+
+        String uuidPayer = transactionJsonArray.getJSONObject(0).getString("uuid");
+        String uuidPayee = transactionJsonArray.getJSONObject(1).getString("uuid");
+
+        this.mockMvc.perform(post("/transactions/" + uuidPayer + "/rollback"))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("ROLLBACK"))
+                .andExpect(jsonPath("$.transactionAmount").value("10"))
+                .andExpect(jsonPath("$.amountBefore").value("0"))
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
+
+        this.mockMvc.perform(get("/transactions/" + uuidPayer))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$.transactionAmount").value("-10"))
+                .andExpect(jsonPath("$.amountBefore").value("10"))
+                .andExpect(jsonPath("$.amountAfter").value("0"))
+                .andExpect(jsonPath("$.isCanceled").value("true"));
+
+        this.mockMvc.perform(get("/transactions/" + uuidPayee))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$.transactionAmount").value("10"))
+                .andExpect(jsonPath("$.amountBefore").value("10"))
+                .andExpect(jsonPath("$.amountAfter").value("20"))
+                .andExpect(jsonPath("$.isCanceled").value("true"));
     }
 }
