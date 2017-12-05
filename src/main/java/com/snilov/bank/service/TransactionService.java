@@ -128,15 +128,24 @@ public class TransactionService {
     private List<Transaction> transferA2A(TransferRequestBody transferRequestBody) {
         List<Transaction> transactions = new LinkedList<>();
 
-        transactions.add(createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayer()),
-                TypeTransactionEnum.WITHDRAW,
+        Transaction transactionPayer = createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayer()),
+                TypeTransactionEnum.TRANSFER,
                 -transferRequestBody.getAmount()
-        ));
+        );
 
-        transactions.add(createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayee()),
-                TypeTransactionEnum.DEPOSIT,
+        Transaction transactionPayee = createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayee()),
+                TypeTransactionEnum.TRANSFER,
                 transferRequestBody.getAmount()
-        ));
+        );
+
+        transactionPayer.setLinkedTransaction(transactionPayee);
+        transactionPayee.setLinkedTransaction(transactionPayer);
+
+        transactionRepository.save(transactionPayer);
+        transactionRepository.save(transactionPayee);
+
+        transactions.add(transactionPayer);
+        transactions.add(transactionPayee);
 
         return transactions;
     }
@@ -144,15 +153,24 @@ public class TransactionService {
     private List<Transaction> transferC2C(TransferRequestBody transferRequestBody) {
         List<Transaction> transactions = new LinkedList<>();
 
-        transactions.add(createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayer()),
-                TypeTransactionEnum.WITHDRAW,
+        Transaction transactionPayer = createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayer()),
+                TypeTransactionEnum.TRANSFER,
                 -transferRequestBody.getAmount()
-        ));
+        );
 
-        transactions.add(createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayee()),
-                TypeTransactionEnum.DEPOSIT,
+        Transaction transactionPayee = createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayee()),
+                TypeTransactionEnum.TRANSFER,
                 transferRequestBody.getAmount()
-        ));
+        );
+
+        transactionPayer.setLinkedTransaction(transactionPayee);
+        transactionPayee.setLinkedTransaction(transactionPayer);
+
+        transactionRepository.save(transactionPayer);
+        transactionRepository.save(transactionPayee);
+
+        transactions.add(transactionPayer);
+        transactions.add(transactionPayee);
 
         return transactions;
     }
