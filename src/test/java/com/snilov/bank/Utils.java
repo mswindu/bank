@@ -44,4 +44,11 @@ public class Utils {
                 "\"typeTransaction1\": \"" + typeTransaction + "\", " +
                 "\"transactionAmount1\": \"" + transactionAmount + "\"}";
     }
+
+    public static String createTransferJson(String typeTransfer, String uuidPayer, String uuidPayee, String amount) {
+        return "{ \"typeTransferEnum\": \"" + typeTransfer + "\", " +
+                "\"uuidPayer\": \"" + uuidPayer + "\", " +
+                "\"uuidPayee\": \"" + uuidPayee + "\", " +
+                "\"amount\": \"" + amount + "\"}";
+    }
 }

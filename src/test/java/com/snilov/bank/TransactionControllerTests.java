@@ -424,4 +424,110 @@ public class TransactionControllerTests {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").value("You can not cancel the transaction again"));
     }
+
+    @Test
+    public void testTransferC2C() throws Exception {
+        MvcResult result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("false", "1", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("1"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard1 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        result = this.mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createCardsJson("false", "2", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.blocked").value("false"))
+                .andExpect(jsonPath("$.number").value("2"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidCard2 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard1, "DEPOSIT", "10")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("10"))
+                .andExpect(jsonPath("$.amountBefore").value("0"))
+                .andExpect(jsonPath("$.amountAfter").value("10"));
+
+        this.mockMvc.perform(post("/transactions")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransactionsJson(uuidCard2, "DEPOSIT", "10")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.transactionAmount").value("10"))
+                .andExpect(jsonPath("$.amountBefore").value("0"))
+                .andExpect(jsonPath("$.amountAfter").value("10"));
+
+        this.mockMvc.perform(post("/transactions/transfer")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransferJson("C2C", uuidCard1, uuidCard2, "10")))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.transactions", hasSize(2)))
+                .andExpect(jsonPath("$._embedded.transactions[0].typeTransaction").value("WITHDRAW"))
+                .andExpect(jsonPath("$._embedded.transactions[0].transactionAmount").value("-10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountAfter").value("0"))
+                .andExpect(jsonPath("$._embedded.transactions[0].isCanceled").value("false"))
+                .andExpect(jsonPath("$._embedded.transactions[1].typeTransaction").value("DEPOSIT"))
+                .andExpect(jsonPath("$._embedded.transactions[1].transactionAmount").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
+                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"));
+    }
+
+    @Test
+    public void testTransferA2A() throws Exception {
+        MvcResult result = this.mockMvc.perform(post("/accounts")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createAccountJson("RUR", "10", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.currency").value("RUR"))
+                .andExpect(jsonPath("$.balance").value("10"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidAccount1 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        result = this.mockMvc.perform(post("/accounts")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createAccountJson("RUR", "10", "DEBIT")))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.currency").value("RUR"))
+                .andExpect(jsonPath("$.balance").value("10"))
+                .andExpect(jsonPath("$.type").value("DEBIT"))
+                .andReturn();
+
+        String uuidAccount2 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+
+        this.mockMvc.perform(post("/transactions/transfer")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(createTransferJson("A2A", uuidAccount1, uuidAccount2, "10")))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.transactions", hasSize(2)))
+                .andExpect(jsonPath("$._embedded.transactions[0].typeTransaction").value("WITHDRAW"))
+                .andExpect(jsonPath("$._embedded.transactions[0].transactionAmount").value("-10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountAfter").value("0"))
+                .andExpect(jsonPath("$._embedded.transactions[0].isCanceled").value("false"))
+                .andExpect(jsonPath("$._embedded.transactions[1].typeTransaction").value("DEPOSIT"))
+                .andExpect(jsonPath("$._embedded.transactions[1].transactionAmount").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
+                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"));
+    }
 }
