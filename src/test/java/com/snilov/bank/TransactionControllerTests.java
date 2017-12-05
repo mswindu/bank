@@ -20,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static com.snilov.bank.Utils.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,9 +76,11 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"));
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
     }
 
     @Test
@@ -99,9 +102,11 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard, "WITHDRAW", "-100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("WITHDRAW"))
                 .andExpect(jsonPath("$.transactionAmount").value("-100"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("-100"));
+                .andExpect(jsonPath("$.amountAfter").value("-100"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
     }
 
     @Test
@@ -150,27 +155,33 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"));
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard, "DEPOSIT", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
                 .andExpect(jsonPath("$.amountBefore").value("10"))
-                .andExpect(jsonPath("$.amountAfter").value("110"));
+                .andExpect(jsonPath("$.amountAfter").value("110"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard, "WITHDRAW", "-5")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("WITHDRAW"))
                 .andExpect(jsonPath("$.transactionAmount").value("-5"))
                 .andExpect(jsonPath("$.amountBefore").value("110"))
-                .andExpect(jsonPath("$.amountAfter").value("105"));
+                .andExpect(jsonPath("$.amountAfter").value("105"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
     }
 
     @Test
@@ -216,36 +227,44 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard1, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"));
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard2, "DEPOSIT", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
                 .andExpect(jsonPath("$.amountBefore").value("10"))
-                .andExpect(jsonPath("$.amountAfter").value("110"));
+                .andExpect(jsonPath("$.amountAfter").value("110"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard1, "WITHDRAW", "-5")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("WITHDRAW"))
                 .andExpect(jsonPath("$.transactionAmount").value("-5"))
                 .andExpect(jsonPath("$.amountBefore").value("110"))
-                .andExpect(jsonPath("$.amountAfter").value("105"));
+                .andExpect(jsonPath("$.amountAfter").value("105"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard2, "WITHDRAW", "-50")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("WITHDRAW"))
                 .andExpect(jsonPath("$.transactionAmount").value("-50"))
                 .andExpect(jsonPath("$.amountBefore").value("105"))
-                .andExpect(jsonPath("$.amountAfter").value("55"));
+                .andExpect(jsonPath("$.amountAfter").value("55"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
     }
 
     @Test
@@ -279,27 +298,33 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard1, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"));
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard2, "DEPOSIT", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("100"));
+                .andExpect(jsonPath("$.amountAfter").value("100"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard1, "WITHDRAW", "-5")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("WITHDRAW"))
                 .andExpect(jsonPath("$.transactionAmount").value("-5"))
                 .andExpect(jsonPath("$.amountBefore").value("10"))
-                .andExpect(jsonPath("$.amountAfter").value("5"));
+                .andExpect(jsonPath("$.amountAfter").value("5"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
     }
 
     @Test
@@ -353,18 +378,22 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"));
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         result = this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard, "DEPOSIT", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
                 .andExpect(jsonPath("$.amountBefore").value("10"))
                 .andExpect(jsonPath("$.amountAfter").value("110"))
+                .andExpect(jsonPath("$.isCanceled").value("false"))
                 .andReturn();
 
         String uuidTransaction = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
@@ -374,16 +403,20 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard, "DEPOSIT", "1000")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("1000"))
                 .andExpect(jsonPath("$.amountBefore").value("110"))
-                .andExpect(jsonPath("$.amountAfter").value("1110"));
+                .andExpect(jsonPath("$.amountAfter").value("1110"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions/" + uuidTransaction + "/rollback"))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("ROLLBACK"))
                 .andExpect(jsonPath("$.transactionAmount").value("-100"))
                 .andExpect(jsonPath("$.amountBefore").value("1110"))
-                .andExpect(jsonPath("$.amountAfter").value("1010"));
+                .andExpect(jsonPath("$.amountAfter").value("1010"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
     }
 
     @Test
@@ -405,9 +438,11 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard, "DEPOSIT", "100")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("100"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
                 .andExpect(jsonPath("$.amountAfter").value("100"))
+                .andExpect(jsonPath("$.isCanceled").value("false"))
                 .andReturn();
 
         String uuidTransaction = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
@@ -415,9 +450,20 @@ public class TransactionControllerTests {
         this.mockMvc.perform(post("/transactions/" + uuidTransaction + "/rollback"))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("ROLLBACK"))
                 .andExpect(jsonPath("$.transactionAmount").value("-100"))
                 .andExpect(jsonPath("$.amountBefore").value("100"))
-                .andExpect(jsonPath("$.amountAfter").value("0"));
+                .andExpect(jsonPath("$.amountAfter").value("0"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
+
+        this.mockMvc.perform(get("/transactions/" + uuidTransaction))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
+                .andExpect(jsonPath("$.transactionAmount").value("100"))
+                .andExpect(jsonPath("$.amountBefore").value("0"))
+                .andExpect(jsonPath("$.amountAfter").value("100"))
+                .andExpect(jsonPath("$.isCanceled").value("true"));
 
         this.mockMvc.perform(post("/transactions/" + uuidTransaction + "/rollback"))
                 .andDo(print())
@@ -456,18 +502,22 @@ public class TransactionControllerTests {
                 .content(createTransactionsJson(uuidCard1, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"));
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(createTransactionsJson(uuidCard2, "DEPOSIT", "10")))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.typeTransaction").value("DEPOSIT"))
                 .andExpect(jsonPath("$.transactionAmount").value("10"))
                 .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"));
+                .andExpect(jsonPath("$.amountAfter").value("10"))
+                .andExpect(jsonPath("$.isCanceled").value("false"));
 
         this.mockMvc.perform(post("/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
