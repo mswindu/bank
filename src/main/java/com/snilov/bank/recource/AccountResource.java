@@ -29,6 +29,7 @@ public class AccountResource extends ResourceSupport {
         this.type = account.getType();
 
         add(linkTo(methodOn(AccountController.class).getAccount(account.getUuid())).withSelfRel());
+        add(linkTo(methodOn(AccountController.class).findCards(account.getUuid())).withRel("find_cards"));
     }
 
 }
