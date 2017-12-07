@@ -29,6 +29,13 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CardRecourse(cardService.createNewCard(createCardRequestBody)));
     }
 
+    @GetMapping(value = "/cards/{uuidCard}")
+    @ResponseBody
+    public ResponseEntity<CardRecourse> getCard(@PathVariable String uuidCard) {
+        System.out.println("getCard = " + uuidCard);
+        return ResponseEntity.ok(new CardRecourse(cardService.getCard(uuidCard)));
+    }
+
     @PutMapping(value = "/cards/{uuidCard}/blocking")
     @ResponseBody
     public ResponseEntity<CardRecourse> blockingCard(@PathVariable String uuidCard) {

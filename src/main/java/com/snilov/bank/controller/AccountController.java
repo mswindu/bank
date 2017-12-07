@@ -1,21 +1,23 @@
 package com.snilov.bank.controller;
 
 import com.snilov.bank.model.Card;
+import com.snilov.bank.recource.AccountResource;
+import com.snilov.bank.recource.CardRecourse;
 import com.snilov.bank.service.AccountService;
 import com.snilov.bank.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.PersistentEntityResource;
-import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@RepositoryRestController
+@RestController
+@ExposesResourceFor(value = AccountResource.class)
 public class AccountController {
 
     private final AccountService accountService;
@@ -27,22 +29,28 @@ public class AccountController {
 
     @PostMapping(value = "/accounts")
     @ResponseBody
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public PersistentEntityResource createNewAccount(@Valid @RequestBody Account account, PersistentEntityResourceAssembler asm) {
-        System.out.println(account);
-        return asm.toFullResource(accountService.createNewAccount(account));
+    public ResponseEntity<AccountResource> createNewAccount(@Valid @RequestBody Account account) {
+        System.out.println("createNewAccount " + account);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AccountResource(accountService.createNewAccount(account)));
+    }
+
+    @GetMapping(value = "/accounts/{uuidAccount}")
+    @ResponseBody
+    public ResponseEntity<AccountResource> getAccount(@PathVariable String uuidAccount) {
+        System.out.println("getAccount = " + uuidAccount);
+        return ResponseEntity.ok(new AccountResource(accountService.getAccount(uuidAccount)));
     }
 
     @GetMapping(value = "/accounts/{uuidAccount}/findCard")
     @ResponseBody
-    public Resources<PersistentEntityResource> findCards(@PathVariable String uuidAccount, PersistentEntityResourceAssembler asm) {
-        System.out.println(uuidAccount);
+    public Resources<CardRecourse> findCards(@PathVariable String uuidAccount) {
+        System.out.println("findCards " + uuidAccount);
         List<Card> cards = accountService.findCards(uuidAccount);
 
-        List<PersistentEntityResource> resources = new ArrayList<>();
+        List<CardRecourse> resources = new ArrayList<>();
         for (Card card : cards) {
-            PersistentEntityResource persistentEntityResource = asm.toFullResource(card);
-            resources.add(persistentEntityResource);
+            CardRecourse cardRecourse = new CardRecourse(card);
+            resources.add(cardRecourse);
         }
         return new Resources<>(resources);
     }

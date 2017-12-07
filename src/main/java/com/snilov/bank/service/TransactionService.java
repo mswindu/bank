@@ -113,7 +113,7 @@ public class TransactionService {
         throw new IllegalArgumentException();
     }
 
-    private Transaction getTransaction(String uuidTransaction) {
+    public Transaction getTransaction(String uuidTransaction) {
         Transaction transaction;
         Optional<Transaction> foundTransaction = transactionRepository.findById(uuidTransaction);
         if (foundTransaction.isPresent())
