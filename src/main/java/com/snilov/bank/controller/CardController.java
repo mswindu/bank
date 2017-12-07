@@ -1,17 +1,18 @@
 package com.snilov.bank.controller;
 
+import com.snilov.bank.recource.CardRecourse;
 import com.snilov.bank.service.CardService;
 import com.snilov.bank.requestBody.CreateCardRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.PersistentEntityResource;
-import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@RepositoryRestController
+@RestController
+@ExposesResourceFor(value = CardRecourse.class)
 public class CardController {
 
     private final CardService cardService;
@@ -23,23 +24,22 @@ public class CardController {
 
     @PostMapping(value = "/cards")
     @ResponseBody
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public PersistentEntityResource createNewCard(@Valid @RequestBody CreateCardRequestBody createCardRequestBody, PersistentEntityResourceAssembler asm) {
+    public ResponseEntity<CardRecourse> createNewCard(@Valid @RequestBody CreateCardRequestBody createCardRequestBody) {
         System.out.println(createCardRequestBody);
-        return asm.toFullResource(cardService.createNewCard(createCardRequestBody));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CardRecourse(cardService.createNewCard(createCardRequestBody)));
     }
 
     @PutMapping(value = "/cards/{uuidCard}/blocking")
     @ResponseBody
-    public PersistentEntityResource blockingCard(@PathVariable String uuidCard, PersistentEntityResourceAssembler asm) {
+    public ResponseEntity<CardRecourse> blockingCard(@PathVariable String uuidCard) {
         System.out.println("blockingCard = " + uuidCard);
-        return asm.toFullResource(cardService.blockingCard(uuidCard));
+        return ResponseEntity.ok(new CardRecourse(cardService.blockingCard(uuidCard)));
     }
 
     @PutMapping(value = "/cards/{uuidCard}/unblocking")
     @ResponseBody
-    public PersistentEntityResource unblockedCard(@PathVariable String uuidCard, PersistentEntityResourceAssembler asm) {
+    public ResponseEntity<CardRecourse> unblockedCard(@PathVariable String uuidCard) {
         System.out.println("unblockingCard = " + uuidCard);
-        return asm.toFullResource(cardService.unblockingCard(uuidCard));
+        return ResponseEntity.ok(new CardRecourse(cardService.unblockingCard(uuidCard)));
     }
 }
