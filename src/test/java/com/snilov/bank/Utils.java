@@ -3,52 +3,68 @@ package com.snilov.bank;
 public class Utils {
 
     public static String createAccountJson(String currency, String balance, String type) {
-        return "{ \"currency\": \"" + currency + "\", " +
-                "\"balance\": \"" + balance + "\", " +
-                "\"type\": \"" + type + "\"}";
+        return "{\n" +
+                "  \"currency\": \"" + currency + "\",\n" +
+                "  \"balance\": \"" + balance + "\",\n" +
+                "  \"type\": \"" + type + "\"\n" +
+                "}";
     }
 
     public static String createAccountWithIncorrectParametersJson(String currency, String balance, String type) {
-        return "{ \"currency1\": \"" + currency + "\", " +
-                "\"balance1\": \"" + balance + "\", " +
-                "\"type1\": \"" + type + "\"}";
+        return "{\n" +
+                "  \"currency1\": \"" + currency + "\",\n" +
+                "  \"balance1\": \"" + balance + "\",\n" +
+                "  \"type1\": \"" + type + "\"\n" +
+                "}";
     }
 
     public static String createCardsJson(String blocked, String number, String type, String accountUuid) {
-        return "{ \"blocked\": \"" + blocked + "\", " +
-                "\"number\": \"" + number + "\", " +
-                "\"type\": \"" + type + "\", " +
-                "\"accountUuid\": \"" + accountUuid + "\"}";
+        return "{\n" +
+                "  \"blocked\": \"" + blocked + "\",\n" +
+                "  \"number\": \"" + number + "\",\n" +
+                "  \"type\": \"" + type + "\",\n" +
+                "  \"accountUuid\": \"" + accountUuid + "\"\n" +
+                "}";
     }
 
     public static String createCardsJson(String blocked, String number, String type) {
-        return "{ \"blocked\": \"" + blocked + "\", " +
-                "\"number\": \"" + number + "\", " +
-                "\"type\": \"" + type + "\"}";
+        return "{\n" +
+                "  \"blocked\": \"" + blocked + "\",\n" +
+                "  \"number\": \"" + number + "\",\n" +
+                "  \"type\": \"" + type + "\"\n" +
+                "}";
     }
 
     public static String createCardsWithIncorrectParametersJson(String blocked, String number, String type) {
-        return "{ \"blocked1\": \"" + blocked + "\", " +
-                "\"number1\": \"" + number + "\", " +
-                "\"type1\": \"" + type + "\"}";
+        return "{\n" +
+                "  \"blocked1\": \"" + blocked + "\",\n" +
+                "  \"number1\": \"" + number + "\",\n" +
+                "  \"type1\": \"" + type + "\"\n" +
+                "}";
     }
 
     public static String createTransactionsJson(String uuidCard, String typeTransaction, String transactionAmount) {
-        return "{ \"uuidCard\": \"" + uuidCard + "\", " +
-                "\"typeTransaction\": \"" + typeTransaction + "\", " +
-                "\"transactionAmount\": \"" + transactionAmount + "\"}";
+        return "{\n" +
+                "  \"uuidCard\": \"" + uuidCard + "\",\n" +
+                "  \"typeTransaction\": \"" + typeTransaction + "\",\n" +
+                "  \"transactionAmount\": \"" + transactionAmount + "\"\n" +
+                "}";
     }
 
     public static String createTransactionsWithIncorrectParametersJson(String uuidCard, String typeTransaction, String transactionAmount) {
-        return "{ \"uuidCard1\": \"" + uuidCard + "\", " +
-                "\"typeTransaction1\": \"" + typeTransaction + "\", " +
-                "\"transactionAmount1\": \"" + transactionAmount + "\"}";
+        return "{\n" +
+                "  \"uuidCard1\": \"" + uuidCard + "\",\n" +
+                "  \"typeTransaction1\": \"" + typeTransaction + "\",\n" +
+                "  \"transactionAmount1\": \"" + transactionAmount + "\"\n" +
+                "}";
     }
 
     public static String createTransferJson(String typeTransfer, String uuidPayer, String uuidPayee, String amount) {
-        return "{ \"typeTransferEnum\": \"" + typeTransfer + "\", " +
-                "\"uuidPayer\": \"" + uuidPayer + "\", " +
-                "\"uuidPayee\": \"" + uuidPayee + "\", " +
-                "\"amount\": \"" + amount + "\"}";
+        return "{\n" +
+                "  \"typeTransferEnum\": \"" + typeTransfer + "\",\n" +
+                "  \"uuidPayer\": \"" + uuidPayer + "\",\n" +
+                "  \"uuidPayee\": \"" + uuidPayee + "\",\n" +
+                "  \"amount\": \"" + amount + "\"\n" +
+                "}";
     }
 }

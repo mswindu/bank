@@ -1,26 +1,39 @@
 package com.snilov.bank;
 
+import com.snilov.bank.model.enums.AccountTypeEnum;
+import com.snilov.bank.model.enums.CurrencyEnum;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.repository.CardRepository;
 import org.json.JSONObject;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.snilov.bank.Utils.createAccountJson;
 import static com.snilov.bank.Utils.createAccountWithIncorrectParametersJson;
 import static com.snilov.bank.Utils.createCardsJson;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.halLinks;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,18 +43,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@AutoConfigureMockMvc
+@AutoConfigureRestDocs(outputDir = "build/generated-snippets")
 public class AccountControllerTests {
 
     @Autowired
-    private WebApplicationContext wac;
-
     private MockMvc mockMvc;
-
-    @Before
-    public void setup() {
-        DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
-        this.mockMvc = builder.build();
-    }
 
     @Autowired
     private CardRepository cardRepository;
@@ -57,14 +64,31 @@ public class AccountControllerTests {
 
     @Test
     public void testCreateNewAccount() throws Exception {
-        this.mockMvc.perform(post("/accounts")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createAccountJson("RUR", "0", "DEBIT")))
-                .andDo(print())
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .post("/accounts")
+                .content(createAccountJson("RUR", "0", "DEBIT"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8));
+
+        resultActions.andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.currency").value("RUR"))
                 .andExpect(jsonPath("$.balance").value("0"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
+
+        resultActions.andDo(document("create-account",
+                links(halLinks(),
+                        linkWithRel("self").description("This account"),
+                        linkWithRel("find_cards").description("Search for cards that have an account")
+                ),
+                responseFields(
+                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
+                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("Unique account id"),
+                        fieldWithPath("type").type(JsonFieldType.STRING).description("Type of the account, one of: " +
+                                Stream.of(AccountTypeEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
+                        fieldWithPath("currency").type(JsonFieldType.STRING).description("Account currency, one of: + " +
+                                Stream.of(CurrencyEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
+                        fieldWithPath("balance").type(JsonFieldType.NUMBER).description("Current account balance")
+                )));
     }
 
     @Test
