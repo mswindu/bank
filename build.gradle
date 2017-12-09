@@ -1,14 +1,17 @@
 buildscript {
 	ext {
 		springBootVersion = '2.0.0.M7'
+		asciiDoctorPluginVersion = '1.5.7'
 	}
 	repositories {
+		jcenter()
 		mavenCentral()
 		maven { url "https://repo.spring.io/snapshot" }
 		maven { url "https://repo.spring.io/milestone" }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.asciidoctor:asciidoctor-gradle-plugin:${asciiDoctorPluginVersion}")
 	}
 }
 
@@ -16,13 +19,58 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.asciidoctor.convert'
 
 group = 'com.snilov'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+asciidoctor {
+	dependsOn test
+	backends = ['html5']
+	options doctype: 'book'
+
+	attributes = [
+			'source-highlighter': 'highlightjs',
+			'imagesdir'         : './images',
+			'toc'               : 'left',
+			'toclevels'         : 3,
+			'numbered'          : '',
+			'icons'             : 'font',
+			'setanchors'        : '',
+			'idprefix'          : '',
+			'idseparator'       : '-',
+			'docinfo1'          : '',
+			'safe-mode-unsafe'  : '',
+			'allow-uri-read'    : '',
+			'snippets'          : snippetsDir,
+			linkattrs           : true,
+			encoding            : 'utf-8'
+	]
+
+	inputs.dir snippetsDir
+	outputDir "build/asciidoc"
+	sourceDir 'src/docs/asciidoc'
+	sources {
+		include 'api-guide.adoc'
+	}
+}
+
+jar {
+	baseName = "bank"
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into "static/docs"
+	}
+}
+
 repositories {
 	mavenCentral()
+	jcenter()
 	maven { url "https://repo.spring.io/snapshot" }
 	maven { url "https://repo.spring.io/milestone" }
 }

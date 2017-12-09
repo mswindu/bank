@@ -1,0 +1,15 @@
+== Rest convention
+include::etc/rest_conv.adoc[]
+== Endpoints
+=== Accounts
+==== Create new account
+include::{snippets}/create-account/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-account/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-account/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-account/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/create-account/links.adoc[]
