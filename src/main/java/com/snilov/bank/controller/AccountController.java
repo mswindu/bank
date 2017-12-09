@@ -5,6 +5,7 @@ import com.snilov.bank.recource.AccountResource;
 import com.snilov.bank.recource.CardRecourse;
 import com.snilov.bank.service.AccountService;
 import com.snilov.bank.model.Account;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resources;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Slf4j
 @ExposesResourceFor(value = AccountResource.class)
 public class AccountController {
 
@@ -30,21 +32,21 @@ public class AccountController {
     @PostMapping(value = "/accounts")
     @ResponseBody
     public ResponseEntity<AccountResource> createNewAccount(@Valid @RequestBody Account account) {
-        System.out.println("createNewAccount " + account);
+        log.debug("createNewAccount " + account);
         return ResponseEntity.status(HttpStatus.CREATED).body(new AccountResource(accountService.createNewAccount(account)));
     }
 
     @GetMapping(value = "/accounts/{uuidAccount}")
     @ResponseBody
     public ResponseEntity<AccountResource> getAccount(@PathVariable String uuidAccount) {
-        System.out.println("getAccount = " + uuidAccount);
+        log.debug("getAccount = " + uuidAccount);
         return ResponseEntity.ok(new AccountResource(accountService.getAccount(uuidAccount)));
     }
 
     @GetMapping(value = "/accounts/{uuidAccount}/findCard")
     @ResponseBody
     public Resources<CardRecourse> findCards(@PathVariable String uuidAccount) {
-        System.out.println("findCards " + uuidAccount);
+        log.debug("findCards " + uuidAccount);
         List<Card> cards = accountService.findCards(uuidAccount);
 
         List<CardRecourse> resources = new ArrayList<>();

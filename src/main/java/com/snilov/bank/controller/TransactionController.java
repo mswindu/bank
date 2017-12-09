@@ -5,6 +5,7 @@ import com.snilov.bank.recource.TransactionResource;
 import com.snilov.bank.requestBody.TransactionRequestBody;
 import com.snilov.bank.requestBody.TransferRequestBody;
 import com.snilov.bank.service.TransactionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -28,7 +30,7 @@ public class TransactionController {
     @PostMapping(value = "/transactions")
     @ResponseBody
     public ResponseEntity<TransactionResource> createNewTransaction(@RequestBody @Valid TransactionRequestBody transactionRequestBody) {
-        System.out.println(transactionRequestBody);
+        log.debug("createNewTransaction = " + transactionRequestBody);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new TransactionResource(transactionService.createNewTransaction(transactionRequestBody)));
     }
@@ -36,7 +38,7 @@ public class TransactionController {
     @GetMapping(value = "/transactions/{uuidTransaction}")
     @ResponseBody
     public ResponseEntity<TransactionResource> getTransaction(@PathVariable String uuidTransaction) {
-        System.out.println("getAccount = " + uuidTransaction);
+        log.debug("getAccount = " + uuidTransaction);
 
         return ResponseEntity.ok(new TransactionResource(transactionService.getTransaction(uuidTransaction)));
     }
@@ -44,7 +46,7 @@ public class TransactionController {
     @PostMapping(value = "/transactions/{uuidTransaction}/rollback")
     @ResponseBody
     public ResponseEntity<TransactionResource> rollbackTransaction(@PathVariable String uuidTransaction) {
-        System.out.println("rollbackTransaction = " + uuidTransaction);
+        log.debug("rollbackTransaction = " + uuidTransaction);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new TransactionResource(transactionService.rollbackTransaction(uuidTransaction)));
     }
@@ -52,7 +54,7 @@ public class TransactionController {
     @PostMapping(value = "/transactions/transfer")
     @ResponseBody
     public Resources<TransactionResource> transfer(@RequestBody @Valid TransferRequestBody transferRequestBody) {
-        System.out.println("transfer = " + transferRequestBody);
+        log.debug("transfer = " + transferRequestBody);
 
         List<Transaction> transactions = transactionService.transfer(transferRequestBody);
 
