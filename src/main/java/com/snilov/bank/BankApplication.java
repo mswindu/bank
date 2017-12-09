@@ -3,11 +3,13 @@ package com.snilov.bank;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import static org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType.HAL;
 
 @SpringBootApplication
-@EnableWebMvc
+@EnableHypermediaSupport(type = HAL)
 public class BankApplication {
 
     public static void main(String[] args) {

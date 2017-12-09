@@ -77,26 +77,28 @@ public class AccountControllerTests {
 
         resultActions.andDo(document("create-account",
                 links(halLinks(),
-                        linkWithRel("self").description("This account"),
-                        linkWithRel("find_cards").description("Search for cards that have an account")
+                        linkWithRel("self").description("Текущий счет"),
+                        linkWithRel("find_cards").description("Получение карт принадлежаших счету")
                 ),
                 responseFields(
-                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
-                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("Unique account id"),
-                        fieldWithPath("type").type(JsonFieldType.STRING).description("Type of the account, one of: " +
+                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Ссылки"),
+                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID счета"),
+                        fieldWithPath("type").type(JsonFieldType.STRING).description("Тип счета, один из: " +
                                 Stream.of(AccountTypeEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
-                        fieldWithPath("currency").type(JsonFieldType.STRING).description("Account currency, one of: + " +
+                        fieldWithPath("currency").type(JsonFieldType.STRING).description("Валюта, одна из: + " +
                                 Stream.of(CurrencyEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
-                        fieldWithPath("balance").type(JsonFieldType.NUMBER).description("Current account balance")
+                        fieldWithPath("balance").type(JsonFieldType.NUMBER).description("Баланс счета")
                 )));
     }
 
     @Test
     public void testCreateNewAccountWithIncorrectParameters() throws Exception {
-        this.mockMvc.perform(post("/accounts")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createAccountWithIncorrectParametersJson("RUR", "0", "DEBIT")))
-                .andDo(print())
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .post("/accounts")
+                .content(createAccountWithIncorrectParametersJson("RUR", "0", "DEBIT"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8));
+
+        resultActions.andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$.message").value("Invalid parameters specified."))
@@ -104,6 +106,12 @@ public class AccountControllerTests {
                 .andExpect(jsonPath("$.errors.balance").value("Balance cannot be empty"))
                 .andExpect(jsonPath("$.errors.currency").value("Currency cannot be empty"))
                 .andExpect(jsonPath("$.errors.type").value("Account type cannot be empty"));
+
+        resultActions.andDo(document("create-account-with-incorrect-parameters",
+                responseFields(
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("Сообщение об ошибке"),
+                        subsectionWithPath("errors").type(JsonFieldType.OBJECT).description("Массив ошибок")
+                )));
     }
 
     @Test
