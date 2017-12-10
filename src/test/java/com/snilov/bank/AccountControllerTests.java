@@ -77,17 +77,17 @@ public class AccountControllerTests {
 
         resultActions.andDo(document("create-account",
                 links(halLinks(),
-                        linkWithRel("self").description("Текущий счет"),
-                        linkWithRel("find_cards").description("Получение карт принадлежаших счету")
+                        linkWithRel("self").description("This account"),
+                        linkWithRel("find_cards").description("Finding cards belonging to the account")
                 ),
                 responseFields(
-                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Ссылки"),
-                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID счета"),
-                        fieldWithPath("type").type(JsonFieldType.STRING).description("Тип счета, один из: " +
+                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
+                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID account"),
+                        fieldWithPath("type").type(JsonFieldType.STRING).description("Account type, one of: " +
                                 Stream.of(AccountTypeEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
-                        fieldWithPath("currency").type(JsonFieldType.STRING).description("Валюта, одна из: + " +
+                        fieldWithPath("currency").type(JsonFieldType.STRING).description("Currency, one of: " +
                                 Stream.of(CurrencyEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
-                        fieldWithPath("balance").type(JsonFieldType.NUMBER).description("Баланс счета")
+                        fieldWithPath("balance").type(JsonFieldType.NUMBER).description("Account balance")
                 )));
     }
 
@@ -109,8 +109,8 @@ public class AccountControllerTests {
 
         resultActions.andDo(document("create-account-with-incorrect-parameters",
                 responseFields(
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("Сообщение об ошибке"),
-                        subsectionWithPath("errors").type(JsonFieldType.OBJECT).description("Массив ошибок")
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("Error massage"),
+                        subsectionWithPath("errors").type(JsonFieldType.OBJECT).description("Array of validation errors")
                 )));
     }
 

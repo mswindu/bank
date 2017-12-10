@@ -13,3 +13,13 @@ include::{snippets}/create-account/http-response.adoc[]
 include::{snippets}/create-account/response-fields.adoc[]
 ====== HATEOAS links
 include::{snippets}/create-account/links.adoc[]
+
+==== Create account with incorrect parameters
+include::{snippets}/create-account-with-incorrect-parameters/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-account-with-incorrect-parameters/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-account-with-incorrect-parameters/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-account-with-incorrect-parameters/response-fields.adoc[]

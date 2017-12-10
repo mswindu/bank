@@ -1,23 +1,26 @@
 === HTTP verbs
-Speakers Service tries to adhere as closely as possible to standard HTTP and REST conventions in its
+Bank Service tries to adhere as closely as possible to standard HTTP and REST conventions in its
 use of HTTP verbs.
 |===
 | Verb | Usage
 | `GET`
 | Used to retrieve a resource
+
 | `POST`
 | Used to create a new resource
+
 | `PATCH`
 | Used to update an existing resource, including partial updates
+
 | `PUT`
 | Used to update an existing resource, full updates only
+
 | `DELETE`
 | Used to delete an existing resource
 |===
 
 === HTTP status codes
-Speakers Service tries to adhere as closely as possible to standard HTTP and REST conventions in its
-use of HTTP status codes.
+Bank Service tries to adhere as closely as possible to standard HTTP and REST conventions in its use of HTTP status codes.
 
 |===
 | Status code | Usage
