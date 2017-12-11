@@ -20,7 +20,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -154,5 +153,16 @@ public class AccountControllerTests {
                 .andExpect(jsonPath("$._embedded.cards[1].number").value("2"))
                 .andExpect(jsonPath("$._embedded.cards[1].type").value("DEBIT"))
                 .andExpect(jsonPath("$._embedded.cards[1].blocked").value("false"));
+
+        resultActions.andDo(document("get-card-for-account",
+                responseFields(
+                        fieldWithPath("_embedded").description("'Card' array with Account resources."),
+                        fieldWithPath("_embedded.cards").description("Array with returned Card resources."),
+                        fieldWithPath("_embedded.cards[].uuid").description("Card uuid"),
+                        fieldWithPath("_embedded.cards[].number").description("Card number."),
+                        fieldWithPath("_embedded.cards[].type").description("Card type."),
+                        fieldWithPath("_embedded.cards[].blocked").description("Is blocked card"),
+                        subsectionWithPath("_embedded.cards[]._links").description("Links")
+                )));
     }
 }

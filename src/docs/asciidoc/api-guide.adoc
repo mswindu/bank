@@ -23,3 +23,13 @@ include::{snippets}/create-account-with-incorrect-parameters/http-request.adoc[]
 include::{snippets}/create-account-with-incorrect-parameters/http-response.adoc[]
 ====== Response fields
 include::{snippets}/create-account-with-incorrect-parameters/response-fields.adoc[]
+
+==== Get cards for an account
+include::{snippets}/get-card-for-account/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/get-card-for-account/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/get-card-for-account/http-response.adoc[]
+====== Response fields
+include::{snippets}/get-card-for-account/response-fields.adoc[]
