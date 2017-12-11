@@ -1,4 +1,4 @@
-package com.snilov.bank;
+package com.snilov.bank.utils;
 
 public class Utils {
 

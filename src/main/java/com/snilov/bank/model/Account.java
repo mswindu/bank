@@ -10,11 +10,13 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-@NoArgsConstructor
+@Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-@Entity
+@Builder
 public class Account implements Serializable {
 
     @Id

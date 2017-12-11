@@ -1,10 +1,13 @@
 package com.snilov.bank;
 
+import com.snilov.bank.model.Account;
+import com.snilov.bank.model.Card;
 import com.snilov.bank.model.enums.AccountTypeEnum;
 import com.snilov.bank.model.enums.CurrencyEnum;
+import com.snilov.bank.model.enums.TypeCardEnum;
 import com.snilov.bank.repository.AccountRepository;
 import com.snilov.bank.repository.CardRepository;
-import org.json.JSONObject;
+import com.snilov.bank.utils.TestDataGenerator;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,16 +19,14 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.snilov.bank.Utils.createAccountJson;
-import static com.snilov.bank.Utils.createAccountWithIncorrectParametersJson;
-import static com.snilov.bank.Utils.createCardsJson;
+import static com.snilov.bank.utils.Utils.createAccountJson;
+import static com.snilov.bank.utils.Utils.createAccountWithIncorrectParametersJson;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.halLinks;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -51,11 +52,13 @@ public class AccountControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
+    private TestDataGenerator given;
+
+    @Autowired
     private CardRepository cardRepository;
 
     @Autowired
     private AccountRepository accountRepository;
-
     @After
     public void tearDown() {
         cardRepository.deleteAll();
@@ -64,13 +67,15 @@ public class AccountControllerTests {
 
     @Test
     public void testCreateNewAccount() throws Exception {
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
-                .post("/accounts")
+        //When
+        ResultActions resultActions = mockMvc.perform(
+                post("/accounts")
                 .content(createAccountJson("RUR", "0", "DEBIT"))
-                .contentType(MediaType.APPLICATION_JSON_UTF8));
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print());
 
-        resultActions.andDo(print())
-                .andExpect(status().isCreated())
+        //Then
+        resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.currency").value("RUR"))
                 .andExpect(jsonPath("$.balance").value("0"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
@@ -93,13 +98,15 @@ public class AccountControllerTests {
 
     @Test
     public void testCreateNewAccountWithIncorrectParameters() throws Exception {
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
-                .post("/accounts")
+        //When
+        ResultActions resultActions = mockMvc.perform(
+                post("/accounts")
                 .content(createAccountWithIncorrectParametersJson("RUR", "0", "DEBIT"))
-                .contentType(MediaType.APPLICATION_JSON_UTF8));
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print());
 
-        resultActions.andDo(print())
-                .andExpect(status().isBadRequest())
+        //Then
+        resultActions.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$.message").value("Invalid parameters specified."))
                 .andExpect(jsonPath("$.errors.*", hasSize(3)))
@@ -125,67 +132,27 @@ public class AccountControllerTests {
 
     @Test
     public void testGetCardsForAccount() throws Exception {
-        MvcResult result = this.mockMvc.perform(post("/accounts")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createAccountJson("RUR", "0", "DEBIT")))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.currency").value("RUR"))
-                .andExpect(jsonPath("$.balance").value("0"))
-                .andExpect(jsonPath("$.type").value("DEBIT"))
-                .andReturn();
+        //Given
+        Account account1 = given.account().type(AccountTypeEnum.DEBIT).currency(CurrencyEnum.RUR).balance(0).save();
+        Account account2 = given.account().type(AccountTypeEnum.DEBIT).currency(CurrencyEnum.RUR).balance(0).save();
+        Card card1 = given.card().number("1").type(TypeCardEnum.DEBIT).blocked(false).account(account1).save();
+        Card card2 = given.card().number("2").type(TypeCardEnum.DEBIT).blocked(false).account(account1).save();
+        Card card3 = given.card().number("3").type(TypeCardEnum.DEBIT).blocked(false).account(account2).save();
 
-        String uuidAccount = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
+        //When
+        ResultActions resultActions = mockMvc.perform(get("/accounts/" + account1.getUuid() + "/findCard"))
+                .andDo(print());
 
-        this.mockMvc.perform(post("/cards")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false", "1", "DEBIT", uuidAccount)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.blocked").value("false"))
-                .andExpect(jsonPath("$.number").value("1"))
-                .andExpect(jsonPath("$.type").value("DEBIT"));
-
-        this.mockMvc.perform(post("/cards")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false", "2", "DEBIT", uuidAccount)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.blocked").value("false"))
-                .andExpect(jsonPath("$.number").value("2"))
-                .andExpect(jsonPath("$.type").value("DEBIT"));
-
-        result = this.mockMvc.perform(post("/accounts")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createAccountJson("RUR", "0", "DEBIT")))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.currency").value("RUR"))
-                .andExpect(jsonPath("$.balance").value("0"))
-                .andExpect(jsonPath("$.type").value("DEBIT"))
-                .andReturn();
-
-        String uuidAccount2 = (new JSONObject(result.getResponse().getContentAsString())).getString("uuid");
-
-        this.mockMvc.perform(post("/cards")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(createCardsJson("false", "3", "DEBIT", uuidAccount2)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.blocked").value("false"))
-                .andExpect(jsonPath("$.number").value("3"))
-                .andExpect(jsonPath("$.type").value("DEBIT"));
-
-        this.mockMvc.perform(get("/accounts/" + uuidAccount + "/findCard"))
-                .andDo(print())
-                .andExpect(status().isOk())
+        //Then
+        resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.cards", hasSize(2)))
+                .andExpect(jsonPath("$._embedded.cards[0].uuid").value(card1.getUuid()))
                 .andExpect(jsonPath("$._embedded.cards[0].number").value("1"))
                 .andExpect(jsonPath("$._embedded.cards[0].type").value("DEBIT"))
                 .andExpect(jsonPath("$._embedded.cards[0].blocked").value("false"))
+                .andExpect(jsonPath("$._embedded.cards[1].uuid").value(card2.getUuid()))
                 .andExpect(jsonPath("$._embedded.cards[1].number").value("2"))
                 .andExpect(jsonPath("$._embedded.cards[1].type").value("DEBIT"))
-                .andExpect(jsonPath("$._embedded.cards[1].blocked").value("false"))
-                .andReturn();
+                .andExpect(jsonPath("$._embedded.cards[1].blocked").value("false"));
     }
 }

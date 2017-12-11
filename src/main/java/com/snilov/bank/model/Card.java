@@ -7,11 +7,13 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@NoArgsConstructor
+@Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-@Entity
+@Builder
 public class Card implements Serializable {
 
     @Id
@@ -27,7 +29,7 @@ public class Card implements Serializable {
     @Column(nullable = false)
     private TypeCardEnum type;
 
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     @GeneratedValue
     private Account account;
 
