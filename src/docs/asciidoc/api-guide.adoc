@@ -33,3 +33,62 @@ include::{snippets}/get-card-for-account/http-request.adoc[]
 include::{snippets}/get-card-for-account/http-response.adoc[]
 ====== Response fields
 include::{snippets}/get-card-for-account/response-fields.adoc[]
+
+=== Cards
+==== Create new card with create new account
+include::{snippets}/create-new-card-and-new-account/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-new-card-and-new-account/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-new-card-and-new-account/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-new-card-and-new-account/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/create-new-card-and-new-account/links.adoc[]
+
+==== Create new card with exists account
+include::{snippets}/create-new-card-and-exists-account/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-new-card-and-exists-account/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-new-card-and-exists-account/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-new-card-and-exists-account/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/create-new-card-and-exists-account/links.adoc[]
+
+==== Create card with incorrect parameters
+include::{snippets}/create-card-with-incorrect-parameters/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-card-with-incorrect-parameters/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-card-with-incorrect-parameters/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-card-with-incorrect-parameters/response-fields.adoc[]
+
+==== Block card
+include::{snippets}/blocking-card/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/blocking-card/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/blocking-card/http-response.adoc[]
+====== Response fields
+include::{snippets}/blocking-card/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/blocking-card/links.adoc[]
+
+==== Unblock card
+include::{snippets}/unblocking-card/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/unblocking-card/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/unblocking-card/http-response.adoc[]
+====== Response fields
+include::{snippets}/unblocking-card/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/unblocking-card/links.adoc[]

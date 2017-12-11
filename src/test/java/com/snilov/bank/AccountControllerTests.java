@@ -58,6 +58,7 @@ public class AccountControllerTests {
 
     @Autowired
     private AccountRepository accountRepository;
+
     @After
     public void tearDown() {
         cardRepository.deleteAll();
@@ -69,8 +70,8 @@ public class AccountControllerTests {
         //When
         ResultActions resultActions = mockMvc.perform(
                 post("/accounts")
-                .content(createAccountJson("RUR", "0", "DEBIT"))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .content(createAccountJson("RUR", "0", "DEBIT"))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print());
 
         //Then
@@ -100,8 +101,8 @@ public class AccountControllerTests {
         //When
         ResultActions resultActions = mockMvc.perform(
                 post("/accounts")
-                .content(createAccountWithIncorrectParametersJson("RUR", "0", "DEBIT"))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .content(createAccountWithIncorrectParametersJson("RUR", "0", "DEBIT"))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print());
 
         //Then
