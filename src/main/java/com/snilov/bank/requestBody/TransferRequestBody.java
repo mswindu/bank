@@ -1,19 +1,18 @@
 package com.snilov.bank.requestBody;
 
 import com.snilov.bank.model.enums.TypeTransferEnum;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
+@Builder
 public class TransferRequestBody {
 
     @Enumerated(EnumType.STRING)

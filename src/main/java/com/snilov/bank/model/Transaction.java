@@ -7,11 +7,11 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.Date;
 
-@NoArgsConstructor
+@Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @ToString
-@Entity
 public class Transaction {
 
     @Id

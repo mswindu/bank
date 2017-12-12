@@ -1,18 +1,17 @@
 package com.snilov.bank.requestBody;
 
 import com.snilov.bank.model.enums.TypeTransactionEnum;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
+@Builder
 public class TransactionRequestBody {
 
     @NotNull(message = "UUID card cannot be empty")
