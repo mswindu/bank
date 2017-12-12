@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -24,6 +25,13 @@ import java.util.List;
 
 import static com.snilov.bank.utils.Utils.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.halLinks;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -77,6 +85,22 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.amountBefore").value("0"))
                 .andExpect(jsonPath("$.amountAfter").value("10"))
                 .andExpect(jsonPath("$.isCanceled").value("false"));
+
+        resultActions.andDo(document("create-transaction-deposit",
+                links(halLinks(),
+                        linkWithRel("self").description("This transaction"),
+                        linkWithRel("rollback").description("Rollback this transaction")
+                ),
+                responseFields(
+                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
+                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID transaction"),
+                        fieldWithPath("typeTransaction").type(JsonFieldType.STRING).description("Type transaction"),
+                        fieldWithPath("transactionDate").type(JsonFieldType.STRING).description("Date transaction"),
+                        fieldWithPath("transactionAmount").type(JsonFieldType.NUMBER).description("Amount transaction"),
+                        fieldWithPath("amountBefore").type(JsonFieldType.NUMBER).description("Amount before transaction"),
+                        fieldWithPath("amountAfter").type(JsonFieldType.NUMBER).description("Amount after transaction"),
+                        fieldWithPath("isCanceled").type(JsonFieldType.BOOLEAN).description("Whether the transaction was canceled")
+                )));
     }
 
     @Test
@@ -98,6 +122,22 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.amountBefore").value("0"))
                 .andExpect(jsonPath("$.amountAfter").value("-100"))
                 .andExpect(jsonPath("$.isCanceled").value("false"));
+
+        resultActions.andDo(document("create-transaction-withdraw",
+                links(halLinks(),
+                        linkWithRel("self").description("This transaction"),
+                        linkWithRel("rollback").description("Rollback this transaction")
+                ),
+                responseFields(
+                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
+                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID transaction"),
+                        fieldWithPath("typeTransaction").type(JsonFieldType.STRING).description("Type transaction"),
+                        fieldWithPath("transactionDate").type(JsonFieldType.STRING).description("Date transaction"),
+                        fieldWithPath("transactionAmount").type(JsonFieldType.NUMBER).description("Amount transaction"),
+                        fieldWithPath("amountBefore").type(JsonFieldType.NUMBER).description("Amount before transaction"),
+                        fieldWithPath("amountAfter").type(JsonFieldType.NUMBER).description("Amount after transaction"),
+                        fieldWithPath("isCanceled").type(JsonFieldType.BOOLEAN).description("Whether the transaction was canceled")
+                )));
     }
 
     @Test
@@ -120,6 +160,12 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.errors.uuidCard").value("UUID card cannot be empty"))
                 .andExpect(jsonPath("$.errors.typeTransaction").value("Transaction type cannot by empty"))
                 .andExpect(jsonPath("$.errors.transactionAmount").value("Transaction amount cannot be empty"));
+
+        resultActions.andDo(document("create-transaction-with-incorrect-parameters",
+                responseFields(
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("Error massage"),
+                        subsectionWithPath("errors").type(JsonFieldType.OBJECT).description("Array of validation errors")
+                )));
     }
 
     @Test
@@ -305,6 +351,22 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$.amountBefore").value("1110"))
                 .andExpect(jsonPath("$.amountAfter").value("1010"))
                 .andExpect(jsonPath("$.isCanceled").value("false"));
+
+        resultActions.andDo(document("create-transaction-rollback",
+                links(halLinks(),
+                        linkWithRel("self").description("This transaction"),
+                        linkWithRel("rollback").description("Rollback this transaction")
+                ),
+                responseFields(
+                        subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
+                        fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID transaction"),
+                        fieldWithPath("typeTransaction").type(JsonFieldType.STRING).description("Type transaction"),
+                        fieldWithPath("transactionDate").type(JsonFieldType.STRING).description("Date transaction"),
+                        fieldWithPath("transactionAmount").type(JsonFieldType.NUMBER).description("Amount transaction"),
+                        fieldWithPath("amountBefore").type(JsonFieldType.NUMBER).description("Amount before transaction"),
+                        fieldWithPath("amountAfter").type(JsonFieldType.NUMBER).description("Amount after transaction"),
+                        fieldWithPath("isCanceled").type(JsonFieldType.BOOLEAN).description("Whether the transaction was canceled")
+                )));
     }
 
     @Test
@@ -352,6 +414,20 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
                 .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
                 .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"));
+
+        resultActions.andDo(document("create-transaction-transfer-C2C",
+                responseFields(
+                        fieldWithPath("_embedded").description("New transactions"),
+                        fieldWithPath("_embedded.transactions").description("Array with returned Transaction resources."),
+                        fieldWithPath("_embedded.transactions[].uuid").description("UUID transaction"),
+                        fieldWithPath("_embedded.transactions[].typeTransaction").description("Type transaction"),
+                        fieldWithPath("_embedded.transactions[].transactionDate").description("Date transaction"),
+                        fieldWithPath("_embedded.transactions[].transactionAmount").description("Amount transaction"),
+                        fieldWithPath("_embedded.transactions[].amountBefore").description("Amount before transaction"),
+                        fieldWithPath("_embedded.transactions[].amountAfter").description("Amount after transaction"),
+                        fieldWithPath("_embedded.transactions[].isCanceled").description("Whether the transaction was canceled"),
+                        subsectionWithPath("_embedded.transactions[]._links").description("Links")
+                )));
     }
 
     @Test
@@ -424,6 +500,20 @@ public class TransactionControllerTests {
                 .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
                 .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
                 .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("false"));
+
+        resultActions.andDo(document("create-transaction-transfer-A2A",
+                responseFields(
+                        fieldWithPath("_embedded").description("New transactions"),
+                        fieldWithPath("_embedded.transactions").description("Array with returned Transaction resources."),
+                        fieldWithPath("_embedded.transactions[].uuid").description("UUID transaction"),
+                        fieldWithPath("_embedded.transactions[].typeTransaction").description("Type transaction"),
+                        fieldWithPath("_embedded.transactions[].transactionDate").description("Date transaction"),
+                        fieldWithPath("_embedded.transactions[].transactionAmount").description("Amount transaction"),
+                        fieldWithPath("_embedded.transactions[].amountBefore").description("Amount before transaction"),
+                        fieldWithPath("_embedded.transactions[].amountAfter").description("Amount after transaction"),
+                        fieldWithPath("_embedded.transactions[].isCanceled").description("Whether the transaction was canceled"),
+                        subsectionWithPath("_embedded.transactions[]._links").description("Links")
+                )));
     }
 
     @Test

@@ -92,3 +92,70 @@ include::{snippets}/unblocking-card/http-response.adoc[]
 include::{snippets}/unblocking-card/response-fields.adoc[]
 ====== HATEOAS links
 include::{snippets}/unblocking-card/links.adoc[]
+
+=== Transactions
+==== Create transaction with type DEPOSIT
+include::{snippets}/create-transaction-deposit/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-transaction-deposit/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-transaction-deposit/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-transaction-deposit/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/create-transaction-deposit/links.adoc[]
+
+==== Create transaction with type WITHDRAW
+include::{snippets}/create-transaction-withdraw/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-transaction-withdraw/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-transaction-withdraw/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-transaction-withdraw/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/create-transaction-withdraw/links.adoc[]
+
+==== Create transaction with type ROLLBACK
+include::{snippets}/create-transaction-rollback/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-transaction-rollback/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-transaction-rollback/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-transaction-rollback/response-fields.adoc[]
+====== HATEOAS links
+include::{snippets}/create-transaction-rollback/links.adoc[]
+
+==== Create transaction with type TRANSFER (Account to account)
+include::{snippets}/create-transaction-transfer-A2A/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-transaction-transfer-A2A/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-transaction-transfer-A2A/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-transaction-transfer-A2A/response-fields.adoc[]
+
+==== Create transaction with type TRANSFER (Card to card)
+include::{snippets}/create-transaction-transfer-C2C/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-transaction-transfer-C2C/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-transaction-transfer-C2C/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-transaction-transfer-C2C/response-fields.adoc[]
+
+==== Create transaction with incorrect parameters
+include::{snippets}/create-transaction-with-incorrect-parameters/curl-request.adoc[]
+===== HTTP Request
+include::{snippets}/create-transaction-with-incorrect-parameters/http-request.adoc[]
+===== HTTP Response
+====== Success HTTP responses
+include::{snippets}/create-transaction-with-incorrect-parameters/http-response.adoc[]
+====== Response fields
+include::{snippets}/create-transaction-with-incorrect-parameters/response-fields.adoc[]
