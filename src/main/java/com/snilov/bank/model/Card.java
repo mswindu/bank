@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Builder
-public class Card implements Serializable {
+public class Card {
 
     @Id
     @GeneratedValue(generator = "system-uuid")

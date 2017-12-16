@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @ToString
 @Builder
-public class Account implements Serializable {
+public class Account {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
