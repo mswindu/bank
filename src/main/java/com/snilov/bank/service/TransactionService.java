@@ -59,48 +59,31 @@ public class TransactionService {
                 ));
     }
 
-    public Transaction rollbackTransaction(String uuidTransaction) {
-        Transaction transaction = getTransaction(uuidTransaction);
+    public List<Transaction> rollbackTransaction(String uuidTransaction) {
+        List<Transaction> transactions = new LinkedList<>();
+        transactions.add(getTransaction(uuidTransaction));
 
-        if (transaction.getIsCanceled())
+        if (transactions.get(0).getIsCanceled())
             throw new CanNotCancelTransactionAgainException("You can not cancel the transaction again");
 
-        Account account = transaction.getAccount();
-
-        Integer amountBefore = account.getBalance();
-
-        account.setBalance(amountBefore - transaction.getTransactionAmount());
-
-        accountRepository.save(account);
-
-        transaction.setIsCanceled(true);
-        transactionRepository.save(transaction);
-
-        // Пока решение в лоб, зацикливание происходит.
-        if (transaction.getTypeTransaction() == TypeTransactionEnum.TRANSFER && transaction.getLinkedTransaction() != null) {
-            Transaction transactionLinked = getTransaction(transaction.getLinkedTransaction().getUuid());
-            if (transactionLinked.getIsCanceled())
-                throw new CanNotCancelTransactionAgainException("You can not cancel the transaction again");
-
-            Account accountLinked = transactionLinked.getAccount();
-
-            Integer amountBeforeLinked = accountLinked.getBalance();
-
-            accountLinked.setBalance(amountBeforeLinked - transactionLinked.getTransactionAmount());
-
-            accountRepository.save(accountLinked);
-
-            transactionLinked.setIsCanceled(true);
-            transactionRepository.save(transactionLinked);
-
-            transactionRepository.save(new Transaction(transactionLinked.getAccount(), transactionLinked.getCard(), transactionLinked, TypeTransactionEnum.ROLLBACK,
-                    -transactionLinked.getTransactionAmount(), new Date(), amountBeforeLinked, amountBeforeLinked - transactionLinked.getTransactionAmount()
-            ));
+        if (transactions.get(0).getTypeTransaction() == TypeTransactionEnum.TRANSFER) {
+            transactions.add(transactions.get(0).getLinkedTransaction());
         }
 
-        return transactionRepository.save(new Transaction(transaction.getAccount(), transaction.getCard(), transaction, TypeTransactionEnum.ROLLBACK,
-                -transaction.getTransactionAmount(), new Date(), amountBefore, amountBefore - transaction.getTransactionAmount()
-        ));
+        for (int i = 0; i < transactions.size(); i++) {
+            Transaction currentTransaction = transactions.get(i);
+            Account account = currentTransaction.getAccount();
+            Integer amountBefore = account.getBalance();
+            account.setBalance(amountBefore - currentTransaction.getTransactionAmount());
+
+            accountRepository.save(account);
+
+            currentTransaction.setIsCanceled(true);
+            transactionRepository.save(currentTransaction);
+            transactions.set(i, currentTransaction);
+        }
+
+        return transactions;
     }
 
     public List<Transaction> transfer(TransferRequestBody transferRequestBody) {
@@ -124,25 +107,25 @@ public class TransactionService {
         return transaction;
     }
 
-    private Transaction createNewTransaction(Account account, TypeTransactionEnum typeTransaction, Integer transactionAmount) {
+    private Transaction createNewTransaction(Account account, Integer transactionAmount) {
         Integer amountBefore = account.getBalance();
 
         account.setBalance(amountBefore + transactionAmount);
 
         return transactionRepository.save(
-                new Transaction(account, null, typeTransaction,
+                new Transaction(account, null, TypeTransactionEnum.TRANSFER,
                         transactionAmount, new Date(), amountBefore, amountBefore + transactionAmount
                 ));
     }
 
-    private Transaction createNewTransaction(Card card, TypeTransactionEnum typeTransaction, Integer transactionAmount) {
+    private Transaction createNewTransaction(Card card, Integer transactionAmount) {
         Account account = card.getAccount();
         Integer amountBefore = account.getBalance();
 
         account.setBalance(amountBefore + transactionAmount);
 
         return transactionRepository.save(
-                new Transaction(account, card, typeTransaction,
+                new Transaction(account, card, TypeTransactionEnum.TRANSFER,
                         transactionAmount, new Date(), amountBefore, amountBefore + transactionAmount
                 ));
     }
@@ -151,12 +134,10 @@ public class TransactionService {
         List<Transaction> transactions = new LinkedList<>();
 
         Transaction transactionPayer = createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayer()),
-                TypeTransactionEnum.TRANSFER,
                 -transferRequestBody.getAmount()
         );
 
         Transaction transactionPayee = createNewTransaction(accountService.getAccount(transferRequestBody.getUuidPayee()),
-                TypeTransactionEnum.TRANSFER,
                 transferRequestBody.getAmount()
         );
 
@@ -176,12 +157,10 @@ public class TransactionService {
         List<Transaction> transactions = new LinkedList<>();
 
         Transaction transactionPayer = createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayer()),
-                TypeTransactionEnum.TRANSFER,
                 -transferRequestBody.getAmount()
         );
 
         Transaction transactionPayee = createNewTransaction(cardService.getCard(transferRequestBody.getUuidPayee()),
-                TypeTransactionEnum.TRANSFER,
                 transferRequestBody.getAmount()
         );
 

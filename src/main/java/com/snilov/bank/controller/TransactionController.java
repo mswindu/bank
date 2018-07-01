@@ -45,10 +45,18 @@ public class TransactionController {
 
     @PostMapping(value = "/transactions/{uuidTransaction}/rollback")
     @ResponseBody
-    public ResponseEntity<TransactionResource> rollbackTransaction(@PathVariable String uuidTransaction) {
+    public Resources<TransactionResource> rollbackTransaction(@PathVariable String uuidTransaction) {
         log.debug("rollbackTransaction = " + uuidTransaction);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TransactionResource(transactionService.rollbackTransaction(uuidTransaction)));
+        List<Transaction> transactions = transactionService.rollbackTransaction(uuidTransaction);
+
+        List<TransactionResource> resources = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            TransactionResource transactionResource = new TransactionResource(transaction);
+            resources.add(transactionResource);
+        }
+
+        return new Resources<>(resources);
     }
 
     @PostMapping(value = "/transactions/transfer")

@@ -345,14 +345,16 @@ public class TransactionControllerTests {
                 .andDo(print());
 
         //Then
-        resultActions.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.typeTransaction").value("ROLLBACK"))
-                .andExpect(jsonPath("$.transactionAmount").value("-100"))
-                .andExpect(jsonPath("$.amountBefore").value("1110"))
-                .andExpect(jsonPath("$.amountAfter").value("1010"))
-                .andExpect(jsonPath("$.isCanceled").value("false"));
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.transactions", hasSize(1)))
+                .andExpect(jsonPath("$._embedded.transactions[0].uuid").value(transaction2.getUuid()))
+                .andExpect(jsonPath("$._embedded.transactions[0].typeTransaction").value("DEPOSIT"))
+                .andExpect(jsonPath("$._embedded.transactions[0].transactionAmount").value("100"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountAfter").value("110"))
+                .andExpect(jsonPath("$._embedded.transactions[0].isCanceled").value("true"));
 
-        resultActions.andDo(document("create-transaction-rollback",
+        /*resultActions.andDo(document("create-transaction-rollback",
                 links(halLinks(),
                         linkWithRel("self").description("This transaction"),
                         linkWithRel("rollback").description("Rollback this transaction")
@@ -366,7 +368,7 @@ public class TransactionControllerTests {
                         fieldWithPath("amountBefore").type(JsonFieldType.NUMBER).description("Amount before transaction"),
                         fieldWithPath("amountAfter").type(JsonFieldType.NUMBER).description("Amount after transaction"),
                         fieldWithPath("isCanceled").type(JsonFieldType.BOOLEAN).description("Whether the transaction was canceled")
-                )));
+                )));*/
     }
 
     @Test
@@ -375,7 +377,7 @@ public class TransactionControllerTests {
         Account account = given.account().type(AccountTypeEnum.DEBIT).currency(CurrencyEnum.RUR).balance(0).save();
         Card card = given.card().number("1").type(TypeCardEnum.DEBIT).blocked(false).account(account).save();
         Transaction transaction1 = given.transactionDeposit().uuidCard(card.getUuid()).amount(100).save();
-        Transaction transaction2 = given.transactionRollback().uuidTransaction(transaction1.getUuid()).save();
+        List<Transaction> rollbackTransactions1 = given.transactionRollback().uuidTransaction(transaction1.getUuid()).save();
         Transaction transaction3 = given.transactionDeposit().uuidCard(card.getUuid()).amount(100).save();
 
         //When
@@ -449,30 +451,20 @@ public class TransactionControllerTests {
                 .andDo(print());
 
         //Then
-        resultActions.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.typeTransaction").value("ROLLBACK"))
-                .andExpect(jsonPath("$.transactionAmount").value("10"))
-                .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"))
-                .andExpect(jsonPath("$.isCanceled").value("false"));
-
-        this.mockMvc.perform(get("/transactions/" + transactions.get(0).getUuid()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
-                .andExpect(jsonPath("$.transactionAmount").value("-10"))
-                .andExpect(jsonPath("$.amountBefore").value("10"))
-                .andExpect(jsonPath("$.amountAfter").value("0"))
-                .andExpect(jsonPath("$.isCanceled").value("true"));
-
-        this.mockMvc.perform(get("/transactions/" + transactions.get(1).getUuid()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
-                .andExpect(jsonPath("$.transactionAmount").value("10"))
-                .andExpect(jsonPath("$.amountBefore").value("10"))
-                .andExpect(jsonPath("$.amountAfter").value("20"))
-                .andExpect(jsonPath("$.isCanceled").value("true"));
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.transactions", hasSize(2)))
+                .andExpect(jsonPath("$._embedded.transactions[0].uuid").value(transactions.get(0).getUuid()))
+                .andExpect(jsonPath("$._embedded.transactions[0].typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$._embedded.transactions[0].transactionAmount").value("-10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountAfter").value("0"))
+                .andExpect(jsonPath("$._embedded.transactions[0].isCanceled").value("true"))
+                .andExpect(jsonPath("$._embedded.transactions[1].uuid").value(transactions.get(1).getUuid()))
+                .andExpect(jsonPath("$._embedded.transactions[1].typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$._embedded.transactions[1].transactionAmount").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
+                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("true"));
     }
 
     @Test
@@ -533,29 +525,19 @@ public class TransactionControllerTests {
                 .andDo(print());
 
         //Then
-        resultActions.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.typeTransaction").value("ROLLBACK"))
-                .andExpect(jsonPath("$.transactionAmount").value("10"))
-                .andExpect(jsonPath("$.amountBefore").value("0"))
-                .andExpect(jsonPath("$.amountAfter").value("10"))
-                .andExpect(jsonPath("$.isCanceled").value("false"));
-
-        this.mockMvc.perform(get("/transactions/" + transactions.get(0).getUuid()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
-                .andExpect(jsonPath("$.transactionAmount").value("-10"))
-                .andExpect(jsonPath("$.amountBefore").value("10"))
-                .andExpect(jsonPath("$.amountAfter").value("0"))
-                .andExpect(jsonPath("$.isCanceled").value("true"));
-
-        this.mockMvc.perform(get("/transactions/" + transactions.get(1).getUuid()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.typeTransaction").value("TRANSFER"))
-                .andExpect(jsonPath("$.transactionAmount").value("10"))
-                .andExpect(jsonPath("$.amountBefore").value("10"))
-                .andExpect(jsonPath("$.amountAfter").value("20"))
-                .andExpect(jsonPath("$.isCanceled").value("true"));
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.transactions", hasSize(2)))
+                .andExpect(jsonPath("$._embedded.transactions[0].uuid").value(transactions.get(0).getUuid()))
+                .andExpect(jsonPath("$._embedded.transactions[0].typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$._embedded.transactions[0].transactionAmount").value("-10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[0].amountAfter").value("0"))
+                .andExpect(jsonPath("$._embedded.transactions[0].isCanceled").value("true"))
+                .andExpect(jsonPath("$._embedded.transactions[1].uuid").value(transactions.get(1).getUuid()))
+                .andExpect(jsonPath("$._embedded.transactions[1].typeTransaction").value("TRANSFER"))
+                .andExpect(jsonPath("$._embedded.transactions[1].transactionAmount").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountBefore").value("10"))
+                .andExpect(jsonPath("$._embedded.transactions[1].amountAfter").value("20"))
+                .andExpect(jsonPath("$._embedded.transactions[1].isCanceled").value("true"));
     }
 }

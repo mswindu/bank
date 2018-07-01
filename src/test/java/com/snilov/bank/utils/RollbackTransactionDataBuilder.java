@@ -3,6 +3,8 @@ package com.snilov.bank.utils;
 import com.snilov.bank.model.Transaction;
 import com.snilov.bank.service.TransactionService;
 
+import java.util.List;
+
 public class RollbackTransactionDataBuilder {
 
     private final TransactionService transactionService;
@@ -18,7 +20,7 @@ public class RollbackTransactionDataBuilder {
         return this;
     }
 
-    public Transaction save() {
+    public List<Transaction> save() {
         return transactionService.rollbackTransaction(uuidTransaction);
     }
 }
