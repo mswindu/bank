@@ -29,8 +29,8 @@ public class CardRecourse extends ResourceSupport {
         add(linkTo(methodOn(CardController.class).getCard(card.getUuid())).withSelfRel());
 
         if (blocked)
-            add(linkTo(methodOn(CardController.class).unblockedCard(uuid)).withRel("unblocking"));
+            add(linkTo(methodOn(CardController.class).unblockCard(uuid)).withRel("unblock"));
         else
-            add(linkTo(methodOn(CardController.class).blockingCard(uuid)).withRel("blocking"));
+            add(linkTo(methodOn(CardController.class).blockCard(uuid)).withRel("block"));
     }
 }

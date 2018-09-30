@@ -1,5 +1,6 @@
 package com.snilov.bank.controller;
 
+import com.snilov.bank.constant.Path;
 import com.snilov.bank.model.Transaction;
 import com.snilov.bank.recource.TransactionResource;
 import com.snilov.bank.requestBody.TransactionRequestBody;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@RequestMapping(value = Path.TRANSACTIONS)
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -27,7 +29,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @PostMapping(value = "/transactions")
+    @PostMapping
     @ResponseBody
     public ResponseEntity<TransactionResource> createNewTransaction(@RequestBody @Valid TransactionRequestBody transactionRequestBody) {
         log.debug("createNewTransaction = " + transactionRequestBody);
@@ -35,7 +37,7 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new TransactionResource(transactionService.createNewTransaction(transactionRequestBody)));
     }
 
-    @GetMapping(value = "/transactions/{uuidTransaction}")
+    @GetMapping(value = Path.TRANSACTION)
     @ResponseBody
     public ResponseEntity<TransactionResource> getTransaction(@PathVariable String uuidTransaction) {
         log.debug("getAccount = " + uuidTransaction);
@@ -43,7 +45,7 @@ public class TransactionController {
         return ResponseEntity.ok(new TransactionResource(transactionService.getTransaction(uuidTransaction)));
     }
 
-    @PostMapping(value = "/transactions/{uuidTransaction}/rollback")
+    @PostMapping(value = Path.ROLLBACK)
     @ResponseBody
     public Resources<TransactionResource> rollbackTransaction(@PathVariable String uuidTransaction) {
         log.debug("rollbackTransaction = " + uuidTransaction);
@@ -59,7 +61,7 @@ public class TransactionController {
         return new Resources<>(resources);
     }
 
-    @PostMapping(value = "/transactions/transfer")
+    @PostMapping(value = Path.TRANSFER)
     @ResponseBody
     public Resources<TransactionResource> transfer(@RequestBody @Valid TransferRequestBody transferRequestBody) {
         log.debug("transfer = " + transferRequestBody);

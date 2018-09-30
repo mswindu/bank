@@ -47,7 +47,7 @@ public class CardService {
         return cardRepository.save(card);
     }
 
-    public Card blockingCard(String uuidCard) {
+    public Card blockCard(String uuidCard) {
         Card card = getCard(uuidCard);
 
         if (!card.getBlocked()) {
@@ -58,7 +58,7 @@ public class CardService {
         return card;
     }
 
-    public Card unblockingCard(String uuidCard) {
+    public Card unblockCard(String uuidCard) {
         Card card = getCard(uuidCard);
 
         if (card.getBlocked()) {

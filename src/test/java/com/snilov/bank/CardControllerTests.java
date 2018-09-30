@@ -81,7 +81,7 @@ public class CardControllerTests {
         resultActions.andDo(document("create-new-card-and-new-account",
                 links(halLinks(),
                         linkWithRel("self").description("This card"),
-                        linkWithRel("blocking").description("Block this card")
+                        linkWithRel("block").description("Block this card")
                 ),
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
@@ -113,7 +113,7 @@ public class CardControllerTests {
         resultActions.andDo(document("create-new-card-and-exists-account",
                 links(halLinks(),
                         linkWithRel("self").description("This card"),
-                        linkWithRel("blocking").description("Block this card")
+                        linkWithRel("block").description("Block this card")
                 ),
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
@@ -168,7 +168,7 @@ public class CardControllerTests {
         Card card = given.card().number("1").type(TypeCardEnum.DEBIT).blocked(false).account(account).save();
 
         //When
-        ResultActions resultActions = mockMvc.perform(put("/cards/" + card.getUuid() + "/blocking"))
+        ResultActions resultActions = mockMvc.perform(put("/cards/" + card.getUuid() + "/block"))
                 .andDo(print());
 
         //Then
@@ -178,10 +178,10 @@ public class CardControllerTests {
                 .andExpect(jsonPath("$.pan").value("1"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
 
-        resultActions.andDo(document("blocking-card",
+        resultActions.andDo(document("block-card",
                 links(halLinks(),
                         linkWithRel("self").description("This card"),
-                        linkWithRel("unblocking").description("Unblock this card")
+                        linkWithRel("unblock").description("Unblock this card")
                 ),
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
@@ -200,7 +200,7 @@ public class CardControllerTests {
         Card card = given.card().number("1").type(TypeCardEnum.DEBIT).blocked(true).account(account).save();
 
         //When
-        ResultActions resultActions = mockMvc.perform(put("/cards/" + card.getUuid() + "/unblocking"))
+        ResultActions resultActions = mockMvc.perform(put("/cards/" + card.getUuid() + "/unblock"))
                 .andDo(print());
 
         //Then
@@ -210,10 +210,10 @@ public class CardControllerTests {
                 .andExpect(jsonPath("$.pan").value("1"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
 
-        resultActions.andDo(document("unblocking-card",
+        resultActions.andDo(document("unblock-card",
                 links(halLinks(),
                         linkWithRel("self").description("This card"),
-                        linkWithRel("blocking").description("Block this card")
+                        linkWithRel("block").description("Block this card")
                 ),
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),

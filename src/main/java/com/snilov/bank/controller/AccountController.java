@@ -1,5 +1,6 @@
 package com.snilov.bank.controller;
 
+import com.snilov.bank.constant.Path;
 import com.snilov.bank.model.Card;
 import com.snilov.bank.recource.AccountResource;
 import com.snilov.bank.recource.CardRecourse;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @ExposesResourceFor(value = AccountResource.class)
+@RequestMapping(value = Path.ACCOUNTS)
 public class AccountController {
 
     private final AccountService accountService;
@@ -29,21 +31,21 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @PostMapping(value = "/accounts")
+    @PostMapping
     @ResponseBody
     public ResponseEntity<AccountResource> createNewAccount(@Valid @RequestBody Account account) {
         log.debug("createNewAccount " + account);
         return ResponseEntity.status(HttpStatus.CREATED).body(new AccountResource(accountService.createNewAccount(account)));
     }
 
-    @GetMapping(value = "/accounts/{uuidAccount}")
+    @GetMapping(value = Path.ACCOUNT)
     @ResponseBody
     public ResponseEntity<AccountResource> getAccount(@PathVariable String uuidAccount) {
         log.debug("getAccount = " + uuidAccount);
         return ResponseEntity.ok(new AccountResource(accountService.getAccount(uuidAccount)));
     }
 
-    @GetMapping(value = "/accounts/{uuidAccount}/findCard")
+    @GetMapping(value = Path.ACCOUNT_FIND_CARD)
     @ResponseBody
     public Resources<CardRecourse> findCards(@PathVariable String uuidAccount) {
         log.debug("findCards " + uuidAccount);

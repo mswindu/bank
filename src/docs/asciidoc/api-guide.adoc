@@ -70,28 +70,28 @@ include::{snippets}/create-card-with-incorrect-parameters/http-response.adoc[]
 include::{snippets}/create-card-with-incorrect-parameters/response-fields.adoc[]
 
 ==== Block card
-include::{snippets}/blocking-card/curl-request.adoc[]
+include::{snippets}/block-card/curl-request.adoc[]
 ===== HTTP Request
-include::{snippets}/blocking-card/http-request.adoc[]
+include::{snippets}/block-card/http-request.adoc[]
 ===== HTTP Response
 ====== Success HTTP responses
-include::{snippets}/blocking-card/http-response.adoc[]
+include::{snippets}/block-card/http-response.adoc[]
 ====== Response fields
-include::{snippets}/blocking-card/response-fields.adoc[]
+include::{snippets}/block-card/response-fields.adoc[]
 ====== HATEOAS links
-include::{snippets}/blocking-card/links.adoc[]
+include::{snippets}/block-card/links.adoc[]
 
 ==== Unblock card
-include::{snippets}/unblocking-card/curl-request.adoc[]
+include::{snippets}/unblock-card/curl-request.adoc[]
 ===== HTTP Request
-include::{snippets}/unblocking-card/http-request.adoc[]
+include::{snippets}/unblock-card/http-request.adoc[]
 ===== HTTP Response
 ====== Success HTTP responses
-include::{snippets}/unblocking-card/http-response.adoc[]
+include::{snippets}/unblock-card/http-response.adoc[]
 ====== Response fields
-include::{snippets}/unblocking-card/response-fields.adoc[]
+include::{snippets}/unblock-card/response-fields.adoc[]
 ====== HATEOAS links
-include::{snippets}/unblocking-card/links.adoc[]
+include::{snippets}/unblock-card/links.adoc[]
 
 === Transactions
 ==== Create transaction with type DEPOSIT
