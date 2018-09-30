@@ -22,7 +22,7 @@ public class Card {
     private String uuid;
 
     @Column(length = 16, nullable = false, unique = true)
-    private String cardNumber;
+    private String pan;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,8 +35,8 @@ public class Card {
     @Column(nullable = false)
     private Boolean blocked;
 
-    public Card(String cardNumber, TypeCardEnum type, Boolean blocked) {
-        this.cardNumber = cardNumber;
+    public Card(String pan, TypeCardEnum type, Boolean blocked) {
+        this.pan = pan;
         this.type = type;
         this.blocked = blocked;
     }
@@ -49,7 +49,7 @@ public class Card {
         Card card = (Card) o;
 
         if (!getUuid().equals(card.getUuid())) return false;
-        if (!getCardNumber().equals(card.getCardNumber())) return false;
+        if (!getPan().equals(card.getPan())) return false;
         if (getType() != card.getType()) return false;
         if (!getAccount().equals(card.getAccount())) return false;
         return getBlocked().equals(card.getBlocked());
@@ -58,7 +58,7 @@ public class Card {
     @Override
     public int hashCode() {
         int result = getUuid().hashCode();
-        result = 31 * result + getCardNumber().hashCode();
+        result = 31 * result + getPan().hashCode();
         result = 31 * result + getType().hashCode();
         result = 31 * result + getAccount().hashCode();
         result = 31 * result + getBlocked().hashCode();

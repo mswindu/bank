@@ -33,7 +33,7 @@ public class CardService {
 
     public Card createNewCard(CreateCardRequestBody createCardRequestBody) {
         Account account;
-        Card card = new Card(createCardRequestBody.getCardNumber(), createCardRequestBody.getType(), createCardRequestBody.getBlocked());
+        Card card = new Card(createCardRequestBody.getPan(), createCardRequestBody.getType(), createCardRequestBody.getBlocked());
         String uuid = createCardRequestBody.getAccountUuid();
 
         if (uuid != null && !uuid.isEmpty()) {

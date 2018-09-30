@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 public class CreateCardRequestBody {
-    @NotNull(message = "Number card cannot be empty")
-    private String cardNumber;
+    @NotNull(message = "Pan cannot be empty")
+    private String pan;
 
     @NotNull(message = "Type card cannot be empty")
     private TypeCardEnum type;

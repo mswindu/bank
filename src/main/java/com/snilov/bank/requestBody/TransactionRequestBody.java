@@ -23,13 +23,13 @@ public class TransactionRequestBody {
     @NotNull(message = "Transaction amount cannot be empty")
     private Integer transactionAmount;
 
-    @AssertTrue(message = "Type transaction 'DEPOSIT' must be a positive cardNumber")
+    @AssertTrue(message = "Type transaction 'DEPOSIT' must be a positive pan")
     private boolean isDepositOk() {
         if (transactionAmount == null || uuidCard == null || typeTransaction == null) return true;
         return getTypeTransaction() != TypeTransactionEnum.DEPOSIT || getTransactionAmount() >= 0;
     }
 
-    @AssertTrue(message = "Type transaction 'WITHDRAW' must be a negative cardNumber")
+    @AssertTrue(message = "Type transaction 'WITHDRAW' must be a negative pan")
     private boolean isWithdrawOk() {
         if (transactionAmount == null || uuidCard == null || typeTransaction == null) return true;
         return getTypeTransaction() != TypeTransactionEnum.WITHDRAW || getTransactionAmount() <= 0;

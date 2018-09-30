@@ -75,7 +75,7 @@ public class CardControllerTests {
         //Then
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
-                .andExpect(jsonPath("$.cardNumber").value("1"))
+                .andExpect(jsonPath("$.pan").value("1"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
 
         resultActions.andDo(document("create-new-card-and-new-account",
@@ -86,7 +86,7 @@ public class CardControllerTests {
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
                         fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID card"),
-                        fieldWithPath("cardNumber").type(JsonFieldType.STRING).description("Card cardNumber"),
+                        fieldWithPath("pan").type(JsonFieldType.STRING).description("Card pan"),
                         fieldWithPath("type").type(JsonFieldType.STRING).description("Type card, one of: " +
                                 Stream.of(TypeCardEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
                         fieldWithPath("blocked").type(JsonFieldType.BOOLEAN).description("Is blocked card")
@@ -107,7 +107,7 @@ public class CardControllerTests {
         //Then
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.blocked").value("false"))
-                .andExpect(jsonPath("$.cardNumber").value("1"))
+                .andExpect(jsonPath("$.pan").value("1"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
 
         resultActions.andDo(document("create-new-card-and-exists-account",
@@ -118,7 +118,7 @@ public class CardControllerTests {
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
                         fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID card"),
-                        fieldWithPath("cardNumber").type(JsonFieldType.STRING).description("Card cardNumber"),
+                        fieldWithPath("pan").type(JsonFieldType.STRING).description("Card pan"),
                         fieldWithPath("type").type(JsonFieldType.STRING).description("Type card, one of: " +
                                 Stream.of(TypeCardEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
                         fieldWithPath("blocked").type(JsonFieldType.BOOLEAN).description("Is blocked card")
@@ -150,7 +150,7 @@ public class CardControllerTests {
                 .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$.message").value("Invalid parameters specified."))
                 .andExpect(jsonPath("$.errors.*", hasSize(3)))
-                .andExpect(jsonPath("$.errors.cardNumber").value("Number card cannot be empty"))
+                .andExpect(jsonPath("$.errors.pan").value("Pan cannot be empty"))
                 .andExpect(jsonPath("$.errors.blocked").value("Blocked status cannot be empty"))
                 .andExpect(jsonPath("$.errors.type").value("Type card cannot be empty"));
 
@@ -175,7 +175,7 @@ public class CardControllerTests {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").value(card.getUuid()))
                 .andExpect(jsonPath("$.blocked").value("true"))
-                .andExpect(jsonPath("$.cardNumber").value("1"))
+                .andExpect(jsonPath("$.pan").value("1"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
 
         resultActions.andDo(document("blocking-card",
@@ -186,7 +186,7 @@ public class CardControllerTests {
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
                         fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID card"),
-                        fieldWithPath("cardNumber").type(JsonFieldType.STRING).description("Card cardNumber"),
+                        fieldWithPath("pan").type(JsonFieldType.STRING).description("Card pan"),
                         fieldWithPath("type").type(JsonFieldType.STRING).description("Type card, one of: " +
                                 Stream.of(TypeCardEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
                         fieldWithPath("blocked").type(JsonFieldType.BOOLEAN).description("Is blocked card")
@@ -207,7 +207,7 @@ public class CardControllerTests {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").value(card.getUuid()))
                 .andExpect(jsonPath("$.blocked").value("false"))
-                .andExpect(jsonPath("$.cardNumber").value("1"))
+                .andExpect(jsonPath("$.pan").value("1"))
                 .andExpect(jsonPath("$.type").value("DEBIT"));
 
         resultActions.andDo(document("unblocking-card",
@@ -218,7 +218,7 @@ public class CardControllerTests {
                 responseFields(
                         subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("Links"),
                         fieldWithPath("uuid").type(JsonFieldType.STRING).description("UUID card"),
-                        fieldWithPath("cardNumber").type(JsonFieldType.STRING).description("Card cardNumber"),
+                        fieldWithPath("pan").type(JsonFieldType.STRING).description("Card pan"),
                         fieldWithPath("type").type(JsonFieldType.STRING).description("Type card, one of: " +
                                 Stream.of(TypeCardEnum.values()).map(Enum::name).collect(Collectors.joining(", "))),
                         fieldWithPath("blocked").type(JsonFieldType.BOOLEAN).description("Is blocked card")

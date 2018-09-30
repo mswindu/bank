@@ -147,11 +147,11 @@ public class AccountControllerTests {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.cards", hasSize(2)))
                 .andExpect(jsonPath("$._embedded.cards[0].uuid").value(card1.getUuid()))
-                .andExpect(jsonPath("$._embedded.cards[0].cardNumber").value("1"))
+                .andExpect(jsonPath("$._embedded.cards[0].pan").value("1"))
                 .andExpect(jsonPath("$._embedded.cards[0].type").value("DEBIT"))
                 .andExpect(jsonPath("$._embedded.cards[0].blocked").value("false"))
                 .andExpect(jsonPath("$._embedded.cards[1].uuid").value(card2.getUuid()))
-                .andExpect(jsonPath("$._embedded.cards[1].cardNumber").value("2"))
+                .andExpect(jsonPath("$._embedded.cards[1].pan").value("2"))
                 .andExpect(jsonPath("$._embedded.cards[1].type").value("DEBIT"))
                 .andExpect(jsonPath("$._embedded.cards[1].blocked").value("false"));
 
@@ -160,7 +160,7 @@ public class AccountControllerTests {
                         fieldWithPath("_embedded").description("'Card' array with Account resources."),
                         fieldWithPath("_embedded.cards").description("Array with returned Card resources."),
                         fieldWithPath("_embedded.cards[].uuid").description("Card uuid"),
-                        fieldWithPath("_embedded.cards[].cardNumber").description("Card cardNumber."),
+                        fieldWithPath("_embedded.cards[].pan").description("Card pan."),
                         fieldWithPath("_embedded.cards[].type").description("Card type."),
                         fieldWithPath("_embedded.cards[].blocked").description("Is blocked card"),
                         subsectionWithPath("_embedded.cards[]._links").description("Links")

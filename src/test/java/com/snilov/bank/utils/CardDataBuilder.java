@@ -17,7 +17,7 @@ public class CardDataBuilder {
     }
 
     public CardDataBuilder number(String number) {
-        this.card.setCardNumber(number);
+        this.card.setPan(number);
         return this;
     }
 

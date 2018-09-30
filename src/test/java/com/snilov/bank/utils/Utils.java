@@ -21,7 +21,7 @@ public class Utils {
     public static String createCardsJson(String blocked, String number, String type, String accountUuid) {
         return "{\n" +
                 "  \"blocked\": \"" + blocked + "\",\n" +
-                "  \"cardNumber\": \"" + number + "\",\n" +
+                "  \"pan\": \"" + number + "\",\n" +
                 "  \"type\": \"" + type + "\",\n" +
                 "  \"accountUuid\": \"" + accountUuid + "\"\n" +
                 "}";
@@ -30,7 +30,7 @@ public class Utils {
     public static String createCardsJson(String blocked, String number, String type) {
         return "{\n" +
                 "  \"blocked\": \"" + blocked + "\",\n" +
-                "  \"cardNumber\": \"" + number + "\",\n" +
+                "  \"pan\": \"" + number + "\",\n" +
                 "  \"type\": \"" + type + "\"\n" +
                 "}";
     }
