@@ -16,13 +16,13 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @Relation(value = "card", collectionRelation = "cards")
 public class CardRecourse extends ResourceSupport {
     private String uuid;
-    private String number;
+    private String cardNumber;
     private TypeCardEnum type;
     private Boolean blocked;
 
     public CardRecourse(Card card) {
         this.uuid = card.getUuid();
-        this.number = card.getNumber();
+        this.cardNumber = card.getCardNumber();
         this.type = card.getType();
         this.blocked = card.getBlocked();
 
