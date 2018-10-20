@@ -45,7 +45,7 @@ public class TransactionController {
         return ResponseEntity.ok(new TransactionResource(transactionService.getTransaction(uuidTransaction)));
     }
 
-    @PostMapping(value = Path.ROLLBACK)
+    @PostMapping(value = Path.TRANSACTION_ROLLBACK)
     @ResponseBody
     public Resources<TransactionResource> rollbackTransaction(@PathVariable String uuidTransaction) {
         log.debug("rollbackTransaction = " + uuidTransaction);

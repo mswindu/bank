@@ -12,7 +12,7 @@ public class Path {
 
     public static final String TRANSACTIONS = "/transactions";
     public static final String TRANSACTION = "/{uuidTransaction}";
-    public static final String ROLLBACK = TRANSACTION + "/rollback";
+    public static final String TRANSACTION_ROLLBACK = TRANSACTION + "/rollback";
     public static final String TRANSFER = "/transfer";
 
 }
