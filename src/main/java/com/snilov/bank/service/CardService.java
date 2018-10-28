@@ -70,13 +70,10 @@ public class CardService {
     }
 
     public Card getCard(String uuidCard) {
-        Card card;
         Optional<Card> foundCard = cardRepository.findById(uuidCard);
-        if (foundCard.isPresent())
-            card = foundCard.get();
-        else
-            throw new ThereIsNoSuchCardException("There is no such card");
 
-        return card;
+        return foundCard.orElseThrow(() ->
+                new ThereIsNoSuchCardException("There is no such card")
+        );
     }
 }

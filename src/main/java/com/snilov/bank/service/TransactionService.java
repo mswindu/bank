@@ -97,14 +97,11 @@ public class TransactionService {
     }
 
     public Transaction getTransaction(String uuidTransaction) {
-        Transaction transaction;
         Optional<Transaction> foundTransaction = transactionRepository.findById(uuidTransaction);
-        if (foundTransaction.isPresent())
-            transaction = foundTransaction.get();
-        else
-            throw new ThereIsNoSuchTransactionException("There is no such transaction");
 
-        return transaction;
+        return foundTransaction.orElseThrow(() ->
+            new ThereIsNoSuchTransactionException("There is no such transaction")
+        );
     }
 
     private Transaction createNewTransaction(Account account, Integer transactionAmount) {

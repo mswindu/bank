@@ -36,9 +36,9 @@ public class AccountService {
 
     public Account getAccount(String uuidAccount) {
         Optional<Account> foundAccount = accountRepository.findById(uuidAccount);
-        if (foundAccount.isPresent())
-            return foundAccount.get();
-        else
-            throw new ThereIsNoSuchAccountException("There is no such account");
+
+        return foundAccount.orElseThrow(() ->
+                new ThereIsNoSuchAccountException("There is no such account")
+        );
     }
 }
